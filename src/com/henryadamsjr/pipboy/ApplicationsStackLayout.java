@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.home;
+package com.henryadamsjr.pipboy;
 
 import android.content.Context;
 import android.content.Intent;

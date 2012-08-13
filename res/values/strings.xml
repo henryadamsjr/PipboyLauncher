@@ -21,7 +21,7 @@
 
     <!-- Home Menus -->
     <string name="menu_wallpaper">Wallpaper</string>
-    <string name="menu_search">Search</string>
+    <string name="menu_search">Stats</string>
     <string name="menu_settings">Settings</string>
 
     <!-- Wallpaper -->

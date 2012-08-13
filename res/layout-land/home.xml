@@ -15,7 +15,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:home="http://schemas.android.com/apk/res/com.example.android.home"
+    xmlns:home="http://schemas.android.com/apk/res/com.henryadamsjr.pipboy"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -38,7 +38,7 @@
         android:visibility="invisible" />
 
     <!-- Favorites and Recents -->
-    <com.example.android.home.ApplicationsStackLayout android:id="@+id/faves_and_recents"
+    <com.henryadamsjr.pipboy.ApplicationsStackLayout android:id="@+id/faves_and_recents"
         home:stackOrientation="horizontal"
         home:marginLeft="1dip"
         home:marginRight="1dip"

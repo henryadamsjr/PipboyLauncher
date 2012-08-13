@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.home;
+package com.henryadamsjr.pipboy;
 
 import android.app.Activity;
 import android.app.ActivityManager;
