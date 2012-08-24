@@ -21,21 +21,16 @@
     android:layout_height="match_parent">
 
     <!-- All applications on the top side of the screen -->
-    <GridView android:id="@+id/all_apps"
+    <ListView android:id="@+id/all_apps"
         android:background="@drawable/application_background"
         android:persistentDrawingCache="animation|scrolling"
         android:alwaysDrawnWithCache="true"
         android:scrollbars="none"
         android:drawSelectorOnTop="false"
         android:listSelector="@drawable/grid_selector"
-        android:numColumns="auto_fit"
-        android:columnWidth="78dp"
-        android:stretchMode="spacingWidth"
-        android:layout_weight="1.0"
-        android:layout_height="0dip"
-        android:layout_width="match_parent"
-        android:stackFromBottom="true"
-        android:visibility="invisible" />
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="visible" />
 
     <!-- Favorites and Recents -->
     <com.henryadamsjr.pipboy.ApplicationsStackLayout android:id="@+id/faves_and_recents"

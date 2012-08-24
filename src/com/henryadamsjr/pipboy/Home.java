@@ -27,13 +27,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.ColorFilter;
+import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
@@ -50,11 +44,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.GridView;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.io.IOException;
 import java.io.FileReader;
@@ -103,7 +93,7 @@ public class Home extends Activity {
     private final BroadcastReceiver mWallpaperReceiver = new WallpaperIntentReceiver();
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
 
-    private GridView mGrid;
+    private ListView mGrid;
 
     private LayoutAnimationController mShowLayoutAnimation;
     private LayoutAnimationController mHideLayoutAnimation;
@@ -211,7 +201,7 @@ public class Home extends Activity {
      */
     private void bindApplications() {
         if (mGrid == null) {
-            mGrid = (GridView) findViewById(R.id.all_apps);
+            mGrid = (ListView) findViewById(R.id.all_apps);
         }
         mGrid.setAdapter(new ApplicationsAdapter(this, mApplications));
         mGrid.setSelection(0);
@@ -666,7 +656,10 @@ public class Home extends Activity {
             }
 
             final TextView textView = (TextView) convertView.findViewById(R.id.label);
-            textView.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
+
+            Typeface font = Typeface.createFromAsset(getAssets(), "monofont.ttf");
+            textView.setTypeface(font);
+            //textView.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
             textView.setText(info.title);
 
             return convertView;
