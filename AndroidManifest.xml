@@ -34,7 +34,7 @@
 
     <application android:persistent="true"
           android:label="@string/home_title"
-          android:icon="@drawable/ic_launcher_home">
+          android:icon="@drawable/ic_launcher_vaultboy">
 
         <activity android:name="Home"
                 android:theme="@style/Theme"
@@ -44,6 +44,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
