@@ -20,6 +20,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <LinearLayout
+        android:layout_height="0dip"
+        android:layout_width="fill_parent"
+        android:layout_weight="1.0"
+        android:orientation="horizontal"
+            >
     <!-- All applications on the top side of the screen -->
     <ListView android:id="@+id/all_apps"
         android:background="@drawable/application_background"
@@ -28,11 +35,21 @@
         android:scrollbars="none"
         android:drawSelectorOnTop="false"
         android:listSelector="@drawable/grid_selector"
-        android:layout_weight="1.0"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
+        android:layout_weight="1.0"
         android:visibility="visible" />
-
+        <LinearLayout
+        android:layout_height="0dip"
+        android:layout_width="fill_parent"
+        android:layout_weight="1.0"
+        android:orientation="vertical"
+                />
+        <ImageView android:id="@+id/app_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical|center_horizontal"/>
+    </LinearLayout>
     <!-- Favorites and Recents -->
     <com.henryadamsjr.pipboy.ApplicationsStackLayout android:id="@+id/faves_and_recents"
         home:stackOrientation="horizontal"

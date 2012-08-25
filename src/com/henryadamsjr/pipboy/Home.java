@@ -219,7 +219,10 @@ public class Home extends Activity {
         mShowApplications.setOnClickListener(new ShowApplications());
         mShowApplicationsCheck = (CheckBox) findViewById(R.id.show_all_apps_check);
 
-        mGrid.setOnItemClickListener(new ApplicationLauncher());
+        ApplicationLauncher appLauncher = new ApplicationLauncher();
+
+        mGrid.setOnItemClickListener(appLauncher);
+        mGrid.setOnItemLongClickListener(appLauncher);
     }
 
     /**
@@ -713,10 +716,20 @@ public class Home extends Activity {
     /**
      * Starts the selected activity/application in the grid view.
      */
-    private class ApplicationLauncher implements AdapterView.OnItemClickListener {
+    private class ApplicationLauncher implements AdapterView.OnItemClickListener,
+            AdapterView.OnItemLongClickListener{
+
         public void onItemClick(AdapterView parent, View v, int position, long id) {
             ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
+            Activity test = (Activity)parent.getContext();
+            ImageView iv = (ImageView)test.findViewById(R.id.app_icon);
+            iv.setImageDrawable(app.icon);
+        }
+
+        public boolean onItemLongClick(AdapterView parent, View v, int position, long id) {
+            ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
             startActivity(app.intent);
+            return true;
         }
     }
 
