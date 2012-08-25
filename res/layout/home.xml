@@ -28,8 +28,9 @@
         android:scrollbars="none"
         android:drawSelectorOnTop="false"
         android:listSelector="@drawable/grid_selector"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_weight="1.0"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
         android:visibility="visible" />
 
     <!-- Favorites and Recents -->

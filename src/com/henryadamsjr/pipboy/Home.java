@@ -121,7 +121,7 @@ public class Home extends Activity {
 
         registerIntentReceivers();
 
-        setDefaultWallpaper();
+        //setDefaultWallpaper();
 
         loadApplications(true);
 

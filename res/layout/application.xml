@@ -16,11 +16,14 @@
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/label"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="4sp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="20dp"
     android:textSize="20sp"
-    android:singleLine="true"
-    android:ellipsize="end"
-    android:textColor="@color/bright_text_dark_focused"
-    android:gravity="center_horizontal|center_vertical" />
+    android:singleLine="false"
+    android:ellipsize="none"
+    android:textColor="#BDFFFA"
+    android:gravity="left|center_vertical|fill_horizontal" />
