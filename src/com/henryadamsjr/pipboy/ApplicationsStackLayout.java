@@ -65,10 +65,6 @@ public class ApplicationsStackLayout extends ViewGroup implements View.OnClickLi
     private View mButton;
     private LayoutInflater mInflater;
 
-    private int mFavoritesEnd;
-    private int mFavoritesStart;
-
-    private List<ApplicationInfo> mFavorites;
     private List<ApplicationInfo> mRecents;
 
     private int mOrientation = VERTICAL;
@@ -135,24 +131,9 @@ public class ApplicationsStackLayout extends ViewGroup implements View.OnClickLi
         final int bottom = getHeight();
 
         // Draw behind recents
-        if (mOrientation == VERTICAL) {
-            mDrawRect.set(0, 0, right, mFavoritesStart);
-        } else {
-            mDrawRect.set(0, 0, mFavoritesStart, bottom);
-        }
+
         background.setBounds(mDrawRect);
         background.draw(canvas);
-
-        // Draw behind favorites
-        if (mFavoritesStart > -1) {
-            if (mOrientation == VERTICAL) {
-                mDrawRect.set(0, mFavoritesStart, right, mFavoritesEnd);
-            } else {
-                mDrawRect.set(mFavoritesStart, 0, mFavoritesEnd, bottom);
-            }
-            background.setBounds(mDrawRect);
-            background.draw(canvas);
-        }
 
         super.onDraw(canvas);
     }
@@ -201,15 +182,6 @@ public class ApplicationsStackLayout extends ViewGroup implements View.OnClickLi
         childTop -= childHeight + mMarginBottom;
         mButton.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
         childTop -= mMarginTop;
-        mFavoritesEnd = childTop - mMarginBottom;
-
-        int oldChildTop = childTop;
-        childTop = stackApplications(mFavorites, childLeft, childTop);
-        if (childTop != oldChildTop) {
-            mFavoritesStart = childTop + mMarginTop;
-        } else {
-            mFavoritesStart = -1;
-        }
 
         stackApplications(mRecents, childLeft, childTop);
     }
@@ -224,15 +196,6 @@ public class ApplicationsStackLayout extends ViewGroup implements View.OnClickLi
         childLeft -= childWidth;
         mButton.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
         childLeft -= mMarginLeft;
-        mFavoritesEnd = childLeft - mMarginRight;
-
-        int oldChildLeft = childLeft;
-        childLeft = stackApplications(mFavorites, childLeft, childTop);
-        if (childLeft != oldChildLeft) {
-            mFavoritesStart = childLeft + mMarginLeft;
-        } else {
-            mFavoritesStart = -1;
-        }
 
         stackApplications(mRecents, childLeft, childTop);
     }
@@ -312,16 +275,6 @@ public class ApplicationsStackLayout extends ViewGroup implements View.OnClickLi
         textView.setOnClickListener(this);
 
         return textView;
-    }
-
-    /**
-     * Sets the list of favorites.
-     *
-     * @param applications the applications to put in the favorites area
-     */
-    public void setFavorites(List<ApplicationInfo> applications) {
-        mFavorites = applications;
-        requestLayout();
     }
 
     /**

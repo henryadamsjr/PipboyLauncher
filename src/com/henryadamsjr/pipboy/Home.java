@@ -84,7 +84,6 @@ public class Home extends Activity {
 
     private static boolean mWallpaperChecked;
     private static ArrayList<ApplicationInfo> mApplications;
-    private static LinkedList<ApplicationInfo> mFavorites;
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
 
@@ -121,7 +120,6 @@ public class Home extends Activity {
         loadApplications(true);
 
         bindApplications();
-        bindFavorites(true);
         bindRecents();
         bindButtons();
 
@@ -219,75 +217,6 @@ public class Home extends Activity {
 
     }
 
-    /**
-     * Refreshes the favorite applications stacked over the all apps button.
-     * The number of favorites depends on the user.
-     */
-    private void bindFavorites(boolean isLaunching) {
-        if (!isLaunching || mFavorites == null) {
-
-            if (mFavorites == null) {
-                mFavorites = new LinkedList<ApplicationInfo>();
-            } else {
-                mFavorites.clear();
-            }
-            mApplicationsStack.setFavorites(mFavorites);            
-            
-            FileReader favReader;
-
-            // Environment.getRootDirectory() is a fancy way of saying ANDROID_ROOT or "/system".
-            final File favFile = new File(Environment.getRootDirectory(), DEFAULT_FAVORITES_PATH);
-            try {
-                favReader = new FileReader(favFile);
-            } catch (FileNotFoundException e) {
-                Log.e(LOG_TAG, "Couldn't find or open favorites file " + favFile);
-                return;
-            }
-
-            final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-            final PackageManager packageManager = getPackageManager();
-
-            try {
-                final XmlPullParser parser = Xml.newPullParser();
-                parser.setInput(favReader);
-
-                beginDocument(parser, TAG_FAVORITES);
-
-                ApplicationInfo info;
-
-                while (true) {
-                    nextElement(parser);
-
-                    String name = parser.getName();
-                    if (!TAG_FAVORITE.equals(name)) {
-                        break;
-                    }
-
-                    final String favoritePackage = parser.getAttributeValue(null, TAG_PACKAGE);
-                    final String favoriteClass = parser.getAttributeValue(null, TAG_CLASS);
-
-                    final ComponentName cn = new ComponentName(favoritePackage, favoriteClass);
-                    intent.setComponent(cn);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    info = getApplicationInfo(packageManager, intent);
-                    if (info != null) {
-                        info.intent = intent;
-                        mFavorites.addFirst(info);
-                    }
-                }
-            } catch (XmlPullParserException e) {
-                Log.w(LOG_TAG, "Got exception parsing favorites.", e);
-            } catch (IOException e) {
-                Log.w(LOG_TAG, "Got exception parsing favorites.", e);
-            }
-        }
-
-        mApplicationsStack.setFavorites(mFavorites);
-    }
-
     private static void beginDocument(XmlPullParser parser, String firstElementName)
             throws XmlPullParserException, IOException {
 
@@ -337,9 +266,9 @@ public class Home extends Activity {
                 ApplicationInfo info = getApplicationInfo(manager, intent);
                 if (info != null) {
                     info.intent = intent;
-                    if (!mFavorites.contains(info)) {
+
                         recents.add(info);
-                    }
+
                 }
             }
         }
@@ -562,7 +491,6 @@ public class Home extends Activity {
             loadApplications(false);
             bindApplications();
             bindRecents();
-            bindFavorites(false);
         }
     }
 
