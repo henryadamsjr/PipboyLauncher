@@ -25,5 +25,5 @@
     android:textSize="20sp"
     android:singleLine="false"
     android:ellipsize="none"
-    android:textColor="#BDFFFA"
+    android:textColor="@color/fallout"
     android:gravity="left|center_vertical|fill_horizontal" />

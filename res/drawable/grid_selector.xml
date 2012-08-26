@@ -22,4 +22,6 @@
     <item android:state_pressed="true" android:drawable="@drawable/selection_frame" />
     <item android:state_window_focused="false" android:drawable="@drawable/selection_frame" />
     <item android:state_window_focused="true" android:drawable="@drawable/selection_frame" />
+    <item android:state_selected="true" android:drawable="@drawable/selection_frame" />
+    <item android:drawable="@drawable/selection_frame" />
 </selector>

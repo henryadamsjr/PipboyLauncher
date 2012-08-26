@@ -27,6 +27,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -35,12 +36,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -90,7 +86,6 @@ public class Home extends Activity {
     private static ArrayList<ApplicationInfo> mApplications;
     private static LinkedList<ApplicationInfo> mFavorites;
 
-    private final BroadcastReceiver mWallpaperReceiver = new WallpaperIntentReceiver();
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
 
     private ListView mGrid;
@@ -155,7 +150,6 @@ public class Home extends Activity {
             mApplications.get(i).icon.setCallback(null);
         }
 
-        unregisterReceiver(mWallpaperReceiver);
         unregisterReceiver(mApplicationsReceiver);
     }
 
@@ -187,7 +181,6 @@ public class Home extends Activity {
      */
     private void registerIntentReceivers() {
         IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
-        registerReceiver(mWallpaperReceiver, filter);
 
         filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
@@ -223,25 +216,7 @@ public class Home extends Activity {
 
         mGrid.setOnItemClickListener(appLauncher);
         mGrid.setOnItemLongClickListener(appLauncher);
-    }
 
-    /**
-     * When no wallpaper was manually set, a default wallpaper is used instead.
-     */
-    private void setDefaultWallpaper() {
-        if (!mWallpaperChecked) {
-            Drawable wallpaper = peekWallpaper();
-            if (wallpaper == null) {
-                try {
-                    clearWallpaper();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Failed to clear wallpaper " + e);
-                }
-            } else {
-                getWindow().setBackgroundDrawable(new ClippedDrawable(wallpaper));
-            }
-            mWallpaperChecked = true;
-        }
     }
 
     /**
@@ -500,7 +475,14 @@ public class Home extends Activity {
                         info.activityInfo.name),
                         Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                application.icon = info.activityInfo.loadIcon(manager);
+
+                Drawable appIcon = info.activityInfo.loadIcon(manager);
+
+                Resources res = getResources();
+                int falloutColor = res.getColor(R.color.fallout);
+
+                appIcon.setColorFilter(falloutColor, PorterDuff.Mode.MULTIPLY);
+                application.icon = appIcon;
 
                 mApplications.add(application);
             }
@@ -569,16 +551,6 @@ public class Home extends Activity {
 //        mGrid.setLayoutAnimationListener(new HideGrid());
 //        mGrid.setLayoutAnimation(mHideLayoutAnimation);
 //        mGrid.startLayoutAnimation();
-    }
-
-    /**
-     * Receives intents from other applications to change the wallpaper.
-     */
-    private class WallpaperIntentReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
-        }
     }
 
     /**
@@ -670,63 +642,24 @@ public class Home extends Activity {
     /**
      * Starts the selected activity/application in the grid view.
      */
-    private class ApplicationLauncher implements AdapterView.OnItemClickListener,
-            AdapterView.OnItemLongClickListener{
+    private class ApplicationLauncher implements
+            AdapterView.OnItemClickListener,
+            AdapterView.OnItemLongClickListener
+    {
 
         public void onItemClick(AdapterView parent, View v, int position, long id) {
             ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
-            Activity test = (Activity)parent.getContext();
-            ImageView iv = (ImageView)test.findViewById(R.id.app_icon);
+            Activity activity = (Activity)parent.getContext();
+            ImageView iv = (ImageView)activity.findViewById(R.id.app_icon);
             iv.setImageDrawable(app.icon);
+
+            ListView lv = (ListView)v.getParent();
         }
 
         public boolean onItemLongClick(AdapterView parent, View v, int position, long id) {
             ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
             startActivity(app.intent);
             return true;
-        }
-    }
-
-    /**
-     * When a drawable is attached to a View, the View gives the Drawable its dimensions
-     * by calling Drawable.setBounds(). In this application, the View that draws the
-     * wallpaper has the same size as the screen. However, the wallpaper might be larger
-     * that the screen which means it will be automatically stretched. Because stretching
-     * a bitmap while drawing it is very expensive, we use a ClippedDrawable instead.
-     * This drawable simply draws another wallpaper but makes sure it is not stretched
-     * by always giving it its intrinsic dimensions. If the wallpaper is larger than the
-     * screen, it will simply get clipped but it won't impact performance.
-     */
-    private class ClippedDrawable extends Drawable {
-        private final Drawable mWallpaper;
-
-        public ClippedDrawable(Drawable wallpaper) {
-            mWallpaper = wallpaper;
-        }
-
-        @Override
-        public void setBounds(int left, int top, int right, int bottom) {
-            super.setBounds(left, top, right, bottom);
-            // Ensure the wallpaper is as large as it really is, to avoid stretching it
-            // at drawing time
-            mWallpaper.setBounds(left, top, left + mWallpaper.getIntrinsicWidth(),
-                    top + mWallpaper.getIntrinsicHeight());
-        }
-
-        public void draw(Canvas canvas) {
-            mWallpaper.draw(canvas);
-        }
-
-        public void setAlpha(int alpha) {
-            mWallpaper.setAlpha(alpha);
-        }
-
-        public void setColorFilter(ColorFilter cf) {
-            mWallpaper.setColorFilter(cf);
-        }
-
-        public int getOpacity() {
-            return mWallpaper.getOpacity();
         }
     }
 }
