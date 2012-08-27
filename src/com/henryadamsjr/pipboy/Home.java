@@ -67,6 +67,13 @@ public class Home extends Activity {
      */
     private static final String KEY_SAVE_GRID_OPENED = "grid.opened";
 
+    private static final String DEFAULT_FAVORITES_PATH = "etc/favorites.xml";
+
+    private static final String TAG_FAVORITES = "favorites";
+    private static final String TAG_FAVORITE = "favorite";
+    private static final String TAG_PACKAGE = "package";
+    private static final String TAG_CLASS = "class";    
+
     // Identifiers for option menu items
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
     private static final int MENU_SEARCH = MENU_WALLPAPER_SETTINGS + 1;
