@@ -55,7 +55,7 @@ public class ClickableTextView extends TextView implements View.OnTouchListener,
             ImageView iv = (ImageView) ll.findViewById(R.id.app_icon);
 
             aa.setSelectedPosition(position);
-            aa.notifyDataSetChanged();
+            aa.notifyDataSetInvalidated();
             iv.setImageDrawable(appInfo.icon);
         }
         return false;

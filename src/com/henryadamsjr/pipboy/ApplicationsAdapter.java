@@ -63,7 +63,7 @@ public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
         Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
         textView.setTypeface(font);
         textView.setText(info.title);
-        textView.setTextColor(getContext().getResources().getColor(R.color.fallout));
+        textView.setTextColor(Home.FALLOUT_COLOR);
 
         return convertView;
     }
