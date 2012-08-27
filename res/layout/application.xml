@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.henryadamsjr.pipboy.ClickableTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/label"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -25,5 +25,4 @@
     android:textSize="20sp"
     android:singleLine="false"
     android:ellipsize="none"
-    android:textColor="@color/fallout"
     android:gravity="left|center_vertical|fill_horizontal" />

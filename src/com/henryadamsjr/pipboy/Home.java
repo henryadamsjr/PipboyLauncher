@@ -58,19 +58,14 @@ public class Home extends Activity {
     /**
      * Tag used for logging errors.
      */
-    private static final String LOG_TAG = "Home";
+    public static final String LOG_TAG = "Pipboy";
+
+    public static final int FALLOUT_COLOR = Color.GREEN;
 
     /**
      * Keys during freeze/thaw.
      */
     private static final String KEY_SAVE_GRID_OPENED = "grid.opened";
-
-    private static final String DEFAULT_FAVORITES_PATH = "etc/favorites.xml";
-
-    private static final String TAG_FAVORITES = "favorites";
-    private static final String TAG_FAVORITE = "favorite";
-    private static final String TAG_PACKAGE = "package";
-    private static final String TAG_CLASS = "class";    
 
     // Identifiers for option menu items
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
@@ -94,9 +89,8 @@ public class Home extends Activity {
 
     private boolean mBlockAnimation;
 
-    private boolean mHomeDown;
-    private boolean mBackDown;
-    
+    private Drawable mSelectionFrame;
+
     private View mShowApplications;
     private CheckBox mShowApplicationsCheck;
 
@@ -104,10 +98,13 @@ public class Home extends Activity {
 
     private Animation mGridEntry;
     private Animation mGridExit;
-    
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        mSelectionFrame = getResources().getDrawable(R.drawable.selection_frame);
+        mSelectionFrame.setColorFilter(FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
 
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
@@ -156,7 +153,7 @@ public class Home extends Activity {
         super.onResume();
         bindRecents();
     }
-    
+
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
@@ -210,38 +207,19 @@ public class Home extends Activity {
         mShowApplications.setOnClickListener(new ShowApplications());
         mShowApplicationsCheck = (CheckBox) findViewById(R.id.show_all_apps_check);
 
-        ApplicationLauncher appLauncher = new ApplicationLauncher();
+        ImageView iv = (ImageView) findViewById(R.id.app_icon);
 
-        mGrid.setOnItemClickListener(appLauncher);
-        mGrid.setOnItemLongClickListener(appLauncher);
+        iv.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                FrameLayout frameLayout = (FrameLayout) view.getParent();
+                LinearLayout linearLayout = (LinearLayout) frameLayout.getParent();
+                ListView listView = (ListView) linearLayout.findViewById(R.id.all_apps);
+                ApplicationsAdapter applicationsAdapter = (ApplicationsAdapter) listView.getAdapter();
+                ApplicationInfo app = applicationsAdapter.getItem(applicationsAdapter.getSelectedPosition());
+                startActivity(app.intent);
 
-    }
-
-    private static void beginDocument(XmlPullParser parser, String firstElementName)
-            throws XmlPullParserException, IOException {
-
-        int type;
-        while ((type = parser.next()) != XmlPullParser.START_TAG &&
-                type != XmlPullParser.END_DOCUMENT) {
-            // Empty
-        }
-
-        if (type != XmlPullParser.START_TAG) {
-            throw new XmlPullParserException("No start tag found");
-        }
-
-        if (!parser.getName().equals(firstElementName)) {
-            throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
-                    ", expected " + firstElementName);
-        }
-    }
-
-    private static void nextElement(XmlPullParser parser) throws XmlPullParserException, IOException {
-        int type;
-        while ((type = parser.next()) != XmlPullParser.START_TAG &&
-                type != XmlPullParser.END_DOCUMENT) {
-            // Empty
-        }
+            }
+        });
     }
 
     /**
@@ -266,9 +244,7 @@ public class Home extends Activity {
                 ApplicationInfo info = getApplicationInfo(manager, intent);
                 if (info != null) {
                     info.intent = intent;
-
-                        recents.add(info);
-
+                    recents.add(info);
                 }
             }
         }
@@ -296,51 +272,12 @@ public class Home extends Activity {
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (!hasFocus) {
-            mBackDown = mHomeDown = false;
-        }
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    mBackDown = true;
-                    return true;
-                case KeyEvent.KEYCODE_HOME:
-                    mHomeDown = true;
-                    return true;
-            }
-        } else if (event.getAction() == KeyEvent.ACTION_UP) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    if (!event.isCanceled()) {
-                        // Do BACK behavior.
-                    }
-                    mBackDown = true;
-                    return true;
-                case KeyEvent.KEYCODE_HOME:
-                    if (!event.isCanceled()) {
-                        // Do HOME behavior.
-                    }
-                    mHomeDown = true;
-                    return true;
-            }
-        }
-
-        return super.dispatchKeyEvent(event);
-    }
-    
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         menu.add(0, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
-                 .setIcon(android.R.drawable.ic_menu_gallery)
-                 .setAlphabeticShortcut('W');
+                .setIcon(android.R.drawable.ic_menu_gallery)
+                .setAlphabeticShortcut('W');
         menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
                 .setIcon(android.R.drawable.ic_search_category_default)
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
@@ -403,15 +340,13 @@ public class Home extends Activity {
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name),
                         Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                 Drawable appIcon = info.activityInfo.loadIcon(manager);
 
-                Resources res = getResources();
-                int falloutColor = res.getColor(R.color.fallout);
-
-                appIcon.setColorFilter(falloutColor, PorterDuff.Mode.MULTIPLY);
+                appIcon.setColorFilter(FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
                 application.icon = appIcon;
+
 
                 mApplications.add(application);
             }
@@ -495,42 +430,14 @@ public class Home extends Activity {
     }
 
     /**
-     * GridView adapter to show the list of all installed applications.
-     */
-    private class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
-        private Rect mOldBounds = new Rect();
-
-        public ApplicationsAdapter(Context context, ArrayList<ApplicationInfo> apps) {
-            super(context, 0, apps);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ApplicationInfo info = mApplications.get(position);
-
-            if (convertView == null) {
-                final LayoutInflater inflater = getLayoutInflater();
-                convertView = inflater.inflate(R.layout.application, parent, false);
-            }
-
-            final TextView textView = (TextView) convertView.findViewById(R.id.label);
-
-            Typeface font = Typeface.createFromAsset(getAssets(), "monofont.ttf");
-            textView.setTypeface(font);
-            textView.setText(info.title);
-
-            return convertView;
-        }
-    }
-
-    /**
      * Shows and hides the applications grid view.
      */
     private class ShowApplications implements View.OnClickListener {
         public void onClick(View v) {
             if (mGrid.getVisibility() != View.VISIBLE) {
                 showApplications(true);
-            } else {
+            }
+            else {
                 hideApplications();
             }
         }
@@ -564,30 +471,6 @@ public class Home extends Activity {
         }
 
         public void onAnimationRepeat(Animation animation) {
-        }
-    }
-
-    /**
-     * Starts the selected activity/application in the grid view.
-     */
-    private class ApplicationLauncher implements
-            AdapterView.OnItemClickListener,
-            AdapterView.OnItemLongClickListener
-    {
-
-        public void onItemClick(AdapterView parent, View v, int position, long id) {
-            ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
-            Activity activity = (Activity)parent.getContext();
-            ImageView iv = (ImageView)activity.findViewById(R.id.app_icon);
-            iv.setImageDrawable(app.icon);
-
-            ListView lv = (ListView)v.getParent();
-        }
-
-        public boolean onItemLongClick(AdapterView parent, View v, int position, long id) {
-            ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
-            startActivity(app.intent);
-            return true;
         }
     }
 }
