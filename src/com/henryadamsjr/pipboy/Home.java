@@ -70,7 +70,7 @@ public class Home extends Activity {
     private static final String TAG_FAVORITES = "favorites";
     private static final String TAG_FAVORITE = "favorite";
     private static final String TAG_PACKAGE = "package";
-    private static final String TAG_CLASS = "class";    
+    private static final String TAG_CLASS = "class";
 
     // Identifiers for option menu items
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
@@ -94,9 +94,9 @@ public class Home extends Activity {
 
     private boolean mBlockAnimation;
 
-    private boolean mHomeDown;
-    private boolean mBackDown;
-    
+    private Drawable mSelectionFrame;
+    private int mFilterColor;
+
     private View mShowApplications;
     private CheckBox mShowApplicationsCheck;
 
@@ -104,10 +104,14 @@ public class Home extends Activity {
 
     private Animation mGridEntry;
     private Animation mGridExit;
-    
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        mFilterColor = Color.GREEN;
+        mSelectionFrame = getResources().getDrawable(R.drawable.selection_frame);
+        mSelectionFrame.setColorFilter(mFilterColor, PorterDuff.Mode.MULTIPLY);
 
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
@@ -156,7 +160,7 @@ public class Home extends Activity {
         super.onResume();
         bindRecents();
     }
-    
+
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
@@ -210,38 +214,20 @@ public class Home extends Activity {
         mShowApplications.setOnClickListener(new ShowApplications());
         mShowApplicationsCheck = (CheckBox) findViewById(R.id.show_all_apps_check);
 
-        ApplicationLauncher appLauncher = new ApplicationLauncher();
+        ImageView iv = (ImageView)findViewById(R.id.app_icon);
 
-        mGrid.setOnItemClickListener(appLauncher);
-        mGrid.setOnItemLongClickListener(appLauncher);
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FrameLayout frameLayout = (FrameLayout)view.getParent();
+                LinearLayout linearLayout = (LinearLayout)frameLayout.getParent();
+                ListView listView = (ListView)linearLayout.findViewById(R.id.all_apps);
+                ApplicationsAdapter applicationsAdapter = (ApplicationsAdapter)listView.getAdapter();
+                ApplicationInfo app = applicationsAdapter.getItem(applicationsAdapter.getSelectedPosition());
+                startActivity(app.intent);
 
-    }
-
-    private static void beginDocument(XmlPullParser parser, String firstElementName)
-            throws XmlPullParserException, IOException {
-
-        int type;
-        while ((type = parser.next()) != XmlPullParser.START_TAG &&
-                type != XmlPullParser.END_DOCUMENT) {
-            // Empty
-        }
-
-        if (type != XmlPullParser.START_TAG) {
-            throw new XmlPullParserException("No start tag found");
-        }
-
-        if (!parser.getName().equals(firstElementName)) {
-            throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
-                    ", expected " + firstElementName);
-        }
-    }
-
-    private static void nextElement(XmlPullParser parser) throws XmlPullParserException, IOException {
-        int type;
-        while ((type = parser.next()) != XmlPullParser.START_TAG &&
-                type != XmlPullParser.END_DOCUMENT) {
-            // Empty
-        }
+            }
+        });
     }
 
     /**
@@ -266,9 +252,7 @@ public class Home extends Activity {
                 ApplicationInfo info = getApplicationInfo(manager, intent);
                 if (info != null) {
                     info.intent = intent;
-
-                        recents.add(info);
-
+                    recents.add(info);
                 }
             }
         }
@@ -296,51 +280,12 @@ public class Home extends Activity {
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (!hasFocus) {
-            mBackDown = mHomeDown = false;
-        }
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    mBackDown = true;
-                    return true;
-                case KeyEvent.KEYCODE_HOME:
-                    mHomeDown = true;
-                    return true;
-            }
-        } else if (event.getAction() == KeyEvent.ACTION_UP) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    if (!event.isCanceled()) {
-                        // Do BACK behavior.
-                    }
-                    mBackDown = true;
-                    return true;
-                case KeyEvent.KEYCODE_HOME:
-                    if (!event.isCanceled()) {
-                        // Do HOME behavior.
-                    }
-                    mHomeDown = true;
-                    return true;
-            }
-        }
-
-        return super.dispatchKeyEvent(event);
-    }
-    
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         menu.add(0, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
-                 .setIcon(android.R.drawable.ic_menu_gallery)
-                 .setAlphabeticShortcut('W');
+                .setIcon(android.R.drawable.ic_menu_gallery)
+                .setAlphabeticShortcut('W');
         menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
                 .setIcon(android.R.drawable.ic_search_category_default)
                 .setAlphabeticShortcut(SearchManager.MENU_KEY);
@@ -403,15 +348,13 @@ public class Home extends Activity {
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name),
                         Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                 Drawable appIcon = info.activityInfo.loadIcon(manager);
 
-                Resources res = getResources();
-                int falloutColor = res.getColor(R.color.fallout);
-
-                appIcon.setColorFilter(falloutColor, PorterDuff.Mode.MULTIPLY);
+                appIcon.setColorFilter(mFilterColor, PorterDuff.Mode.MULTIPLY);
                 application.icon = appIcon;
+
 
                 mApplications.add(application);
             }
@@ -499,13 +442,22 @@ public class Home extends Activity {
      */
     private class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
         private Rect mOldBounds = new Rect();
+        private int selectedPosition = 0;
+
+        public void setSelectedPosition(int position) {
+            selectedPosition = position;
+        }
+
+        public int getSelectedPosition() {
+            return selectedPosition;
+        }
 
         public ApplicationsAdapter(Context context, ArrayList<ApplicationInfo> apps) {
             super(context, 0, apps);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             final ApplicationInfo info = mApplications.get(position);
 
             if (convertView == null) {
@@ -514,10 +466,47 @@ public class Home extends Activity {
             }
 
             final TextView textView = (TextView) convertView.findViewById(R.id.label);
+            final ListView listView = (ListView) parent;
+            final ApplicationInfo app = (ApplicationInfo) listView.getItemAtPosition(position);
+
+            final LinearLayout linearLayout = (LinearLayout) listView.getParent();
+            final ImageView iv = (ImageView) linearLayout.findViewById(R.id.app_icon);
+
+            textView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                    ApplicationsAdapter aa = (ApplicationsAdapter) listView.getAdapter();
+
+                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                        aa.setSelectedPosition(position);
+                        aa.notifyDataSetInvalidated();
+                        iv.setImageDrawable(app.icon);
+                        return false;
+                    }
+
+                return false;
+                }
+            });
+
+            textView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    startActivity(app.intent);
+                    return true;
+                }
+            });
+
+            if (position == selectedPosition) {
+                textView.setBackgroundDrawable(mSelectionFrame);
+            } else {
+                textView.setBackgroundResource(R.drawable.not_selected_frame);
+            }
 
             Typeface font = Typeface.createFromAsset(getAssets(), "monofont.ttf");
             textView.setTypeface(font);
             textView.setText(info.title);
+            textView.setTextColor(mFilterColor);
 
             return convertView;
         }
@@ -564,30 +553,6 @@ public class Home extends Activity {
         }
 
         public void onAnimationRepeat(Animation animation) {
-        }
-    }
-
-    /**
-     * Starts the selected activity/application in the grid view.
-     */
-    private class ApplicationLauncher implements
-            AdapterView.OnItemClickListener,
-            AdapterView.OnItemLongClickListener
-    {
-
-        public void onItemClick(AdapterView parent, View v, int position, long id) {
-            ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
-            Activity activity = (Activity)parent.getContext();
-            ImageView iv = (ImageView)activity.findViewById(R.id.app_icon);
-            iv.setImageDrawable(app.icon);
-
-            ListView lv = (ListView)v.getParent();
-        }
-
-        public boolean onItemLongClick(AdapterView parent, View v, int position, long id) {
-            ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
-            startActivity(app.intent);
-            return true;
         }
     }
 }
