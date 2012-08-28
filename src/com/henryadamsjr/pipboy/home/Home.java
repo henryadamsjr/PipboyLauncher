@@ -42,6 +42,7 @@ import java.util.List;
 
 import com.henryadamsjr.pipboy.ApplicationInfo;
 import com.henryadamsjr.pipboy.ApplicationsAdapter;
+import com.henryadamsjr.pipboy.ColorFilterGenerator;
 import com.henryadamsjr.pipboy.R;
 
 public class Home extends Activity {
@@ -79,11 +80,6 @@ public class Home extends Activity {
 
     private boolean mBlockAnimation;
 
-    private View mShowApplications;
-    private CheckBox mShowApplicationsCheck;
-
-    private ApplicationsStackLayout mApplicationsStack;
-
     private Animation mGridEntry;
     private Animation mGridExit;
 
@@ -102,7 +98,6 @@ public class Home extends Activity {
         loadApplications(true);
 
         bindApplications();
-        bindRecents();
         bindButtons();
 
         mGridEntry = AnimationUtils.loadAnimation(this, R.anim.grid_entry);
@@ -136,6 +131,7 @@ public class Home extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         bindRecents();
     }
 
@@ -178,20 +174,12 @@ public class Home extends Activity {
         }
         mGrid.setAdapter(new ApplicationsAdapter(this, mApplications));
         mGrid.setSelection(0);
-
-        if (mApplicationsStack == null) {
-            mApplicationsStack = (ApplicationsStackLayout)findViewById(R.id.faves_and_recents);
-        }
     }
 
     /**
      * Binds actions to the various buttons.
      */
     private void bindButtons() {
-        mShowApplications = findViewById(R.id.show_all_apps);
-        mShowApplications.setOnClickListener(new ShowApplications());
-        mShowApplicationsCheck = (CheckBox)findViewById(R.id.show_all_apps_check);
-
         ImageView iv = (ImageView)findViewById(R.id.app_icon);
 
         iv.setOnClickListener(new View.OnClickListener() {
@@ -232,8 +220,6 @@ public class Home extends Activity {
                 }
             }
         }
-
-        mApplicationsStack.setRecents(recents);
     }
 
     private static ApplicationInfo getApplicationInfo(PackageManager manager, Intent intent) {
@@ -346,8 +332,6 @@ public class Home extends Activity {
         }
         mBlockAnimation = true;
 
-        mShowApplicationsCheck.toggle();
-
         if (mShowLayoutAnimation == null) {
             mShowLayoutAnimation = AnimationUtils.loadLayoutAnimation(
                     this, R.anim.show_applications);
@@ -382,8 +366,6 @@ public class Home extends Activity {
         }
         mBlockAnimation = true;
 
-        mShowApplicationsCheck.toggle();
-
         if (mHideLayoutAnimation == null) {
             mHideLayoutAnimation = AnimationUtils.loadLayoutAnimation(
                     this, R.anim.hide_applications);
@@ -392,7 +374,6 @@ public class Home extends Activity {
         mGridExit.setAnimationListener(new HideGrid());
         mGrid.startAnimation(mGridExit);
         mGrid.setVisibility(View.INVISIBLE);
-        mShowApplications.requestFocus();
 
         // This enables a layout animation; if you uncomment this code, you need to
         // comment the line mGrid.startAnimation() above

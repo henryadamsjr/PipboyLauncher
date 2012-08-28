@@ -50,6 +50,7 @@
 
         <activity android:name="Wallpaper"
                 android:label="Wallpaper"
+                android:screenOrientation="landscape"
                 android:icon="@drawable/bg_android_icon">
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />
