@@ -222,8 +222,7 @@ public class Home extends Activity {
                 LinearLayout linearLayout = (LinearLayout) frameLayout.getParent();
                 ListView listView = (ListView) linearLayout.findViewById(R.id.all_apps);
                 ApplicationsAdapter applicationsAdapter = (ApplicationsAdapter) listView.getAdapter();
-                ApplicationInfo app = applicationsAdapter.getItem(applicationsAdapter.getSelectedPosition());
-                startActivity(app.intent);
+                startActivity(applicationsAdapter.getSelectedApp().intent);
 
             }
         });

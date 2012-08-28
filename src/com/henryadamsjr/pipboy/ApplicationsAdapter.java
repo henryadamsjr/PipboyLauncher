@@ -22,15 +22,15 @@ import java.util.ArrayList;
 public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
 
     private ArrayList<ApplicationInfo> mApplications;
-    private int selectedPosition = 0;
     private Context appContext;
+    private ApplicationInfo selectedApp;
 
-    public void setSelectedPosition(int position) {
-        selectedPosition = position;
+    public ApplicationInfo getSelectedApp() {
+        return selectedApp;
     }
 
-    public int getSelectedPosition() {
-        return selectedPosition;
+    public void setSelectedApp(ApplicationInfo selectedApp) {
+        this.selectedApp = selectedApp;
     }
 
     public ApplicationsAdapter(Context context, ArrayList<ApplicationInfo> apps) {
@@ -49,16 +49,6 @@ public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
         }
 
         final ClickableTextView textView = (ClickableTextView) convertView.findViewById(R.id.label);
-
-        Drawable selectionFrame = getContext().getResources().getDrawable(R.drawable.selection_frame);
-        selectionFrame.setColorFilter(Home.FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
-
-        if (position == selectedPosition) {
-            textView.setBackgroundDrawable(selectionFrame);
-        }
-        else {
-            textView.setBackgroundResource(R.drawable.not_selected_frame);
-        }
 
         Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
         textView.setTypeface(font);
