@@ -36,7 +36,7 @@
           android:label="@string/home_title"
           android:icon="@drawable/ic_launcher_vaultboy">
 
-        <activity android:name="Home"
+        <activity android:name=".home.Home"
                 android:theme="@style/Theme"
                 android:launchMode="singleInstance"
                 android:stateNotNeeded="true">

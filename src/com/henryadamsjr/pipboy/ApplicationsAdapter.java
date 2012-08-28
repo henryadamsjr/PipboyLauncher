@@ -2,17 +2,11 @@ package com.henryadamsjr.pipboy;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import com.henryadamsjr.pipboy.home.ClickableTextView;
 
 import java.util.ArrayList;
 
@@ -48,12 +42,8 @@ public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
             convertView = inflater.inflate(R.layout.application, parent, false);
         }
 
-        final ClickableTextView textView = (ClickableTextView) convertView.findViewById(R.id.label);
-
-        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
-        textView.setTypeface(font);
-        textView.setText(info.title);
-        textView.setTextColor(Home.FALLOUT_COLOR);
+        ClickableTextView ctv = (ClickableTextView)convertView.findViewById(R.id.label);
+        ctv.setAppInfo(info);
 
         return convertView;
     }

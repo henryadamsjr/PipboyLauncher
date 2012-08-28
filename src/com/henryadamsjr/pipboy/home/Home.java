@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.henryadamsjr.pipboy;
+package com.henryadamsjr.pipboy.home;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -27,32 +27,22 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.graphics.*;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
-import android.util.Xml;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.*;
 
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import com.henryadamsjr.pipboy.ApplicationInfo;
+import com.henryadamsjr.pipboy.ApplicationsAdapter;
+import com.henryadamsjr.pipboy.R;
 
 public class Home extends Activity {
     /**
@@ -66,13 +56,6 @@ public class Home extends Activity {
      * Keys during freeze/thaw.
      */
     private static final String KEY_SAVE_GRID_OPENED = "grid.opened";
-
-    private static final String DEFAULT_FAVORITES_PATH = "etc/favorites.xml";
-
-    private static final String TAG_FAVORITES = "favorites";
-    private static final String TAG_FAVORITE = "favorite";
-    private static final String TAG_PACKAGE = "package";
-    private static final String TAG_CLASS = "class";    
 
     // Identifiers for option menu items
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
@@ -96,8 +79,6 @@ public class Home extends Activity {
 
     private boolean mBlockAnimation;
 
-    private Drawable mSelectionFrame;
-
     private View mShowApplications;
     private CheckBox mShowApplicationsCheck;
 
@@ -109,9 +90,6 @@ public class Home extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
-        mSelectionFrame = getResources().getDrawable(R.drawable.selection_frame);
-        mSelectionFrame.setColorFilter(FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
 
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
@@ -149,7 +127,7 @@ public class Home extends Activity {
         // the previous Home screen on orientation change
         final int count = mApplications.size();
         for (int i = 0; i < count; i++) {
-            mApplications.get(i).icon.setCallback(null);
+            mApplications.get(i).getIcon().setCallback(null);
         }
 
         unregisterReceiver(mApplicationsReceiver);
@@ -196,13 +174,13 @@ public class Home extends Activity {
      */
     private void bindApplications() {
         if (mGrid == null) {
-            mGrid = (ListView) findViewById(R.id.all_apps);
+            mGrid = (ListView)findViewById(R.id.all_apps);
         }
         mGrid.setAdapter(new ApplicationsAdapter(this, mApplications));
         mGrid.setSelection(0);
 
         if (mApplicationsStack == null) {
-            mApplicationsStack = (ApplicationsStackLayout) findViewById(R.id.faves_and_recents);
+            mApplicationsStack = (ApplicationsStackLayout)findViewById(R.id.faves_and_recents);
         }
     }
 
@@ -212,17 +190,17 @@ public class Home extends Activity {
     private void bindButtons() {
         mShowApplications = findViewById(R.id.show_all_apps);
         mShowApplications.setOnClickListener(new ShowApplications());
-        mShowApplicationsCheck = (CheckBox) findViewById(R.id.show_all_apps_check);
+        mShowApplicationsCheck = (CheckBox)findViewById(R.id.show_all_apps_check);
 
-        ImageView iv = (ImageView) findViewById(R.id.app_icon);
+        ImageView iv = (ImageView)findViewById(R.id.app_icon);
 
         iv.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                FrameLayout frameLayout = (FrameLayout) view.getParent();
-                LinearLayout linearLayout = (LinearLayout) frameLayout.getParent();
-                ListView listView = (ListView) linearLayout.findViewById(R.id.all_apps);
-                ApplicationsAdapter applicationsAdapter = (ApplicationsAdapter) listView.getAdapter();
-                startActivity(applicationsAdapter.getSelectedApp().intent);
+                FrameLayout frameLayout = (FrameLayout)view.getParent();
+                LinearLayout linearLayout = (LinearLayout)frameLayout.getParent();
+                ListView listView = (ListView)linearLayout.findViewById(R.id.all_apps);
+                ApplicationsAdapter applicationsAdapter = (ApplicationsAdapter)listView.getAdapter();
+                startActivity(applicationsAdapter.getSelectedApp().getIntent());
 
             }
         });
@@ -234,7 +212,7 @@ public class Home extends Activity {
      */
     private void bindRecents() {
         final PackageManager manager = getPackageManager();
-        final ActivityManager tasksManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        final ActivityManager tasksManager = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
         final List<ActivityManager.RecentTaskInfo> recentTasks = tasksManager.getRecentTasks(
                 MAX_RECENT_TASKS, 0);
 
@@ -249,7 +227,7 @@ public class Home extends Activity {
 
                 ApplicationInfo info = getApplicationInfo(manager, intent);
                 if (info != null) {
-                    info.intent = intent;
+                    info.setIntent(intent);
                     recents.add(info);
                 }
             }
@@ -267,12 +245,12 @@ public class Home extends Activity {
 
         final ApplicationInfo info = new ApplicationInfo();
         final ActivityInfo activityInfo = resolveInfo.activityInfo;
-        info.icon = activityInfo.loadIcon(manager);
-        if (info.title == null || info.title.length() == 0) {
-            info.title = activityInfo.loadLabel(manager);
+        info.setIcon(activityInfo.loadIcon(manager));
+        if (info.getTitle() == null || info.getTitle().length() == 0) {
+            info.setTitle(activityInfo.loadLabel(manager).toString());
         }
-        if (info.title == null) {
-            info.title = "";
+        if (info.getTitle() == null) {
+            info.setTitle("");
         }
         return info;
     }
@@ -341,7 +319,7 @@ public class Home extends Activity {
                 ApplicationInfo application = new ApplicationInfo();
                 ResolveInfo info = apps.get(i);
 
-                application.title = info.loadLabel(manager);
+                application.setTitle(info.loadLabel(manager).toString());
                 application.setActivity(new ComponentName(
                         info.activityInfo.applicationInfo.packageName,
                         info.activityInfo.name),
@@ -351,7 +329,7 @@ public class Home extends Activity {
                 Drawable appIcon = info.activityInfo.loadIcon(manager);
 
                 appIcon.setColorFilter(FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
-                application.icon = appIcon;
+                application.setIcon(appIcon);
 
 
                 mApplications.add(application);
@@ -442,8 +420,7 @@ public class Home extends Activity {
         public void onClick(View v) {
             if (mGrid.getVisibility() != View.VISIBLE) {
                 showApplications(true);
-            }
-            else {
+            } else {
                 hideApplications();
             }
         }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.henryadamsjr.pipboy;
+package com.henryadamsjr.pipboy.home;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.widget.TextView;
+import com.henryadamsjr.pipboy.ApplicationInfo;
+import com.henryadamsjr.pipboy.R;
 
 import java.util.List;
 
@@ -267,11 +269,11 @@ public class ApplicationsStackLayout extends ViewGroup implements View.OnClickLi
 
         TextView textView = (TextView) inflater.inflate(R.layout.favorite, group, false);
 
-        info.icon.setBounds(0, 0, mIconSize, mIconSize);
-        textView.setCompoundDrawables(null, info.icon, null, null);
-        textView.setText(info.title);
+        info.getIcon().setBounds(0, 0, mIconSize, mIconSize);
+        textView.setCompoundDrawables(null, info.getIcon(), null, null);
+        textView.setText(info.getTitle());
 
-        textView.setTag(info.intent);
+        textView.setTag(info.getIntent());
         textView.setOnClickListener(this);
 
         return textView;

@@ -24,26 +24,58 @@ import android.graphics.drawable.Drawable;
  * Represents a launchable application. An application is made of a name (or title), an intent
  * and an icon.
  */
-class ApplicationInfo {
+public class ApplicationInfo {
     /**
      * The application name.
      */
-    CharSequence title;
+    private String title;
 
     /**
      * The intent used to start the application.
      */
-    Intent intent;
+    private Intent intent;
 
     /**
      * The application icon.
      */
-    Drawable icon;
+    private Drawable icon;
 
     /**
      * When set to true, indicates that the icon has been resized.
      */
-    boolean filtered;
+    private boolean filtered;
+
+    public boolean isFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(boolean filtered) {
+        this.filtered = filtered;
+    }
+
+    public Drawable getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Drawable icon) {
+        this.icon = icon;
+    }
+
+    public Intent getIntent() {
+        return intent;
+    }
+
+    public void setIntent(Intent intent) {
+        this.intent = intent;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     /**
      * Creates the application intent based on a component name and various launch flags.
@@ -51,7 +83,7 @@ class ApplicationInfo {
      * @param className the class name of the component representing the intent
      * @param launchFlags the launch flags
      */
-    final void setActivity(ComponentName className, int launchFlags) {
+    public final void setActivity(ComponentName className, int launchFlags) {
         intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setComponent(className);
