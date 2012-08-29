@@ -77,7 +77,7 @@
             android:layout_above="@id/bottom_bar"
             android:orientation="horizontal">
         <!-- All applications on the top side of the screen -->
-        <ListView
+        <com.henryadamsjr.pipboy.home.CustomListView
                 android:id="@+id/all_apps"
                 android:choiceMode="singleChoice"
                 android:listSelector="@drawable/grid_selector"

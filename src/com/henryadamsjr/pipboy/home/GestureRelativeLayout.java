@@ -82,11 +82,13 @@ public class GestureRelativeLayout extends RelativeLayout  implements GestureDet
     @Override
     public void onLongPress(MotionEvent motionEvent) {
         Log.d("Pipboy", "LongPress");
+        ((CustomListView)findViewById(R.id.all_apps)).setSelection(20);
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         Log.d("Pipboy", "Fling");
+        ((CustomListView)findViewById(R.id.all_apps)).setSelection(10);
         return false;
     }
 

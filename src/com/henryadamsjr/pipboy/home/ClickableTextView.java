@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.*;
 import com.henryadamsjr.pipboy.ApplicationInfo;
+import com.henryadamsjr.pipboy.R;
 
 /**
  * Created with IntelliJ IDEA.
@@ -81,5 +82,17 @@ public class ClickableTextView extends TextView{
         } else {
             setPadding(10, 3, 10, 5);
         }
+    }
+
+    public void select()
+    {
+        setBackgroundResource(R.drawable.selection_frame);
+        invalidate();
+    }
+
+    public void deselect()
+    {
+        setBackgroundResource(0);
+        invalidate();
     }
 }
