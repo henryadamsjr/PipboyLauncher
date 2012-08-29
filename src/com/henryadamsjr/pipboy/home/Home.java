@@ -73,7 +73,7 @@ public class Home extends Activity {
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
 
-    private ListView mGrid;
+    private ListView mList;
 
     private LayoutAnimationController mShowLayoutAnimation;
     private LayoutAnimationController mHideLayoutAnimation;
@@ -147,7 +147,7 @@ public class Home extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_SAVE_GRID_OPENED, mGrid.getVisibility() == View.VISIBLE);
+        outState.putBoolean(KEY_SAVE_GRID_OPENED, mList.getVisibility() == View.VISIBLE);
     }
 
     /**
@@ -169,11 +169,11 @@ public class Home extends Activity {
      * Creates a new appplications adapter for the grid view and registers it.
      */
     private void bindApplications() {
-        if (mGrid == null) {
-            mGrid = (ListView)findViewById(R.id.all_apps);
+        if (mList == null) {
+            mList = (ListView)findViewById(R.id.all_apps);
         }
-        mGrid.setAdapter(new ApplicationsAdapter(this, mApplications));
-        mGrid.setSelection(0);
+        mList.setAdapter(new ApplicationsAdapter(this, mApplications));
+        mList.setSelection(0);
     }
 
     /**
@@ -345,10 +345,10 @@ public class Home extends Activity {
 
         if (animate) {
             mGridEntry.setAnimationListener(new ShowGrid());
-            mGrid.startAnimation(mGridEntry);
+            mList.startAnimation(mGridEntry);
         }
 
-        mGrid.setVisibility(View.VISIBLE);
+        mList.setVisibility(View.VISIBLE);
 
         if (!animate) {
             mBlockAnimation = false;
@@ -372,8 +372,8 @@ public class Home extends Activity {
         }
 
         mGridExit.setAnimationListener(new HideGrid());
-        mGrid.startAnimation(mGridExit);
-        mGrid.setVisibility(View.INVISIBLE);
+        mList.startAnimation(mGridExit);
+        mList.setVisibility(View.INVISIBLE);
 
         // This enables a layout animation; if you uncomment this code, you need to
         // comment the line mGrid.startAnimation() above
@@ -399,7 +399,7 @@ public class Home extends Activity {
      */
     private class ShowApplications implements View.OnClickListener {
         public void onClick(View v) {
-            if (mGrid.getVisibility() != View.VISIBLE) {
+            if (mList.getVisibility() != View.VISIBLE) {
                 showApplications(true);
             } else {
                 hideApplications();

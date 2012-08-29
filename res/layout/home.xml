@@ -15,7 +15,7 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:home="http://schemas.android.com/apk/res/com.henryadamsjr.pipboy"
+                android:id="@+id/home"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
     <!-- Favorites and Recents -->
