@@ -37,7 +37,7 @@
           android:icon="@drawable/ic_launcher_vaultboy">
 
         <activity android:name=".home.Home"
-                android:theme="@style/Theme"
+                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                 android:launchMode="singleInstance"
                 android:stateNotNeeded="true">
             <intent-filter>

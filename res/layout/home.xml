@@ -81,6 +81,7 @@
                 android:id="@+id/all_apps"
                 android:choiceMode="singleChoice"
                 android:listSelector="@drawable/grid_selector"
+                android:scrollbars="none"
                 android:divider="@null"
                 android:dividerHeight="0dp"
                 android:layout_weight="2"
