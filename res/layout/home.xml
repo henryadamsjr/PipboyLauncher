@@ -14,10 +14,11 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/home"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<com.henryadamsjr.pipboy.home.GestureRelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <!-- Favorites and Recents -->
     <LinearLayout
             android:id="@+id/bottom_bar"
@@ -99,4 +100,4 @@
         </FrameLayout>
 
     </LinearLayout>
-</RelativeLayout>
+</com.henryadamsjr.pipboy.home.GestureRelativeLayout>

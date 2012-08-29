@@ -6,14 +6,8 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewParent;
 import android.widget.*;
 import com.henryadamsjr.pipboy.ApplicationInfo;
-import com.henryadamsjr.pipboy.ApplicationsAdapter;
-import com.henryadamsjr.pipboy.ColorFilterGenerator;
-import com.henryadamsjr.pipboy.R;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +16,7 @@ import com.henryadamsjr.pipboy.R;
  * Time: 3:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ClickableTextView extends TextView implements View.OnTouchListener, View.OnLongClickListener {
+public class ClickableTextView extends TextView{
 
     private ApplicationInfo appInfo;
 
@@ -49,68 +43,12 @@ public class ClickableTextView extends TextView implements View.OnTouchListener,
     }
 
     private void initialize() {
-        setOnTouchListener(this);
-        setOnLongClickListener(this);
-
         Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
         setTypeface(font);
         setTextColor(Home.FALLOUT_COLOR);
         setTextSize(20);
 
         setCustomPadding();
-    }
-
-    public boolean onLongClick(View view) {
-        if (inList) {
-            ListView lv = (ListView)view.getParent();
-            ApplicationsAdapter aa = (ApplicationsAdapter)lv.getAdapter();
-            ApplicationInfo appInfo = aa.getItem(lv.getPositionForView(this));
-            view.getContext().startActivity(appInfo.getIntent());
-        }
-        else
-        {
-            Toast myToast = Toast.makeText(getContext(), getText(), Toast.LENGTH_SHORT);
-            myToast.show();
-        }
-        return true;
-    }
-
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            if (inList) {
-                ListView lv = (ListView)view.getParent();
-                ApplicationsAdapter aa = (ApplicationsAdapter)lv.getAdapter();
-                ApplicationInfo appInfo = aa.getItem(lv.getPositionForView(view));
-                aa.setSelectedApp(appInfo);
-                LinearLayout ll = (LinearLayout)lv.getParent();
-                ImageView iv = (ImageView)ll.findViewById(R.id.app_icon);
-                iv.setImageDrawable(appInfo.getIcon());
-
-                int i = lv.getFirstVisiblePosition();
-                View v;
-
-                while ((v = lv.getChildAt(i - lv.getFirstVisiblePosition())) != null) {
-                    v.setBackgroundResource(0);
-                    i++;
-                }
-            }
-            else
-            {
-                LinearLayout ll = (LinearLayout)view.getParent();
-                for(int i = 0; i < ll.getChildCount(); i++)
-                {
-                    View v = ll.getChildAt(i);
-                    if(v instanceof ClickableTextView)
-                    {
-                        v.setBackgroundResource(0);
-                        setCustomPadding();
-                    }
-                }
-            }
-
-            view.setBackgroundResource(R.drawable.selection_frame);
-        }
-        return false;
     }
 
     @Override
