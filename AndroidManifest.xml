@@ -34,10 +34,10 @@
 
     <application android:persistent="true"
           android:label="@string/home_title"
-          android:icon="@drawable/ic_launcher_vaultboy">
+          android:icon="@drawable/ic_launcher_vaultboy"
+          android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
         <activity android:name=".home.Home"
-                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                 android:launchMode="singleInstance"
                 android:stateNotNeeded="true">
             <intent-filter>
