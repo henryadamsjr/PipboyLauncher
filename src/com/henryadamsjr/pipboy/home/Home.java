@@ -155,7 +155,6 @@ public class Home extends Activity {
             mList = (ListView)findViewById(R.id.all_apps);
         }
         mList.setAdapter(new ApplicationsAdapter(this, mApplications));
-        mList.setSelection(0);
     }
 
     /**

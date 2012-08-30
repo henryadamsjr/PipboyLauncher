@@ -87,12 +87,10 @@ public class ClickableTextView extends TextView{
     public void select()
     {
         setBackgroundResource(R.drawable.selection_frame);
-        invalidate();
     }
 
     public void deselect()
     {
         setBackgroundResource(0);
-        invalidate();
     }
 }

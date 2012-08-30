@@ -20,7 +20,7 @@ import com.henryadamsjr.pipboy.R;
 public class GestureRelativeLayout extends RelativeLayout  implements GestureDetector.OnGestureListener, View.OnTouchListener {
 
     private GestureDetector gestureDetector;
-    float density = getContext().getResources().getDisplayMetrics().density;
+    private float density = getContext().getResources().getDisplayMetrics().density;
 
     public GestureRelativeLayout(Context context) {
         super(context);
@@ -53,7 +53,8 @@ public class GestureRelativeLayout extends RelativeLayout  implements GestureDet
 
     @Override
     public boolean onDown(MotionEvent motionEvent) {
-        Log.d("Pipboy", "Down");
+        ((CustomListView)findViewById(R.id.all_apps)).setDown(motionEvent.getY());
+        Log.d("Pipboy",String.valueOf(motionEvent.getY()) );
         return true;
     }
 
@@ -72,8 +73,8 @@ public class GestureRelativeLayout extends RelativeLayout  implements GestureDet
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if(Math.abs(distanceY) > Math.abs(distanceX))
         {
-            ListView lv = (ListView)findViewById(R.id.all_apps);
-            lv.smoothScrollBy((int)(density * -distanceY), 0);
+            CustomListView clv = (CustomListView)findViewById(R.id.all_apps);
+            clv.scrollSelection((int)e2.getY());
         }
 
         return false;
@@ -82,13 +83,10 @@ public class GestureRelativeLayout extends RelativeLayout  implements GestureDet
     @Override
     public void onLongPress(MotionEvent motionEvent) {
         Log.d("Pipboy", "LongPress");
-        ((CustomListView)findViewById(R.id.all_apps)).setSelection(20);
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d("Pipboy", "Fling");
-        ((CustomListView)findViewById(R.id.all_apps)).setSelection(10);
         return false;
     }
 

@@ -1,6 +1,7 @@
 package com.henryadamsjr.pipboy.home;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ListView;
@@ -14,67 +15,107 @@ import com.henryadamsjr.pipboy.ApplicationInfo;
  * Time: 5:17 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CustomListView extends ListView{
+public class CustomListView extends ListView {
 
     private int selectedPosition = -1;
+    private int down;
+    private int numOfRows;
+    private int yPerRow;
 
     public CustomListView(Context context) {
         super(context);
-        initialize();
     }
 
     public CustomListView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initialize();
     }
 
     public CustomListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initialize();
     }
 
-    private void initialize()
-    {
+    public void setDown(float d) {
+        down = (int)d;
+    }
+
+    public void scrollSelection(int newY) {
+
+
+        int distanceY = newY - down;
+
+        if (distanceY != 0) {
+
+            int numOfMovements = distanceY / yPerRow;
+
+            if (numOfMovements != 0) {
+                down = down + (numOfMovements * yPerRow);
+            }
+
+            int movementDirection = distanceY / Math.abs(distanceY);
+
+            for (int i = 0; i != numOfMovements; i = i + movementDirection) {
+                setSelection(selectedPosition + movementDirection);
+            }
+
+        }
 
     }
 
     @Override
     public void setSelection(int position) {
 
+        if (position < 0) {
+            position = 0;
+        } else if (position > getChildCount()) {
+            //position = getChildCount() - 1;
+        }
+
+        if (getLastVisiblePosition() == -1 || position == selectedPosition) {
+            return;
+        }
+
         ClickableTextView tv = (ClickableTextView)getChildAt(selectedPosition - getFirstVisiblePosition());
-        if(tv != null)
-        {
+        if (tv != null) {
             tv.deselect();
         }
 
-        if(position < getFirstVisiblePosition() || position > getLastVisiblePosition())
-        {
+        if (position <= getFirstVisiblePosition() || position >= getLastVisiblePosition()) {
             smoothScrollToPosition(position);
         }
 
-        tv = (ClickableTextView)getChildAt(position - getFirstVisiblePosition());
-        if(tv != null)
-        {
-            tv.select();
+
+        ClickableTextView tv2 = (ClickableTextView)getChildAt(position - getFirstVisiblePosition());
+        if (tv2 != null) {
+            tv2.select();
         }
+
+
 
         selectedPosition = position;
     }
 
-    @Override
-    public int getSelectedItemPosition() {
+    public int getSelectedPosition() {
         return selectedPosition;
     }
 
     @Override
     public ApplicationInfo getSelectedItem() {
-        if(selectedPosition > -1)
-        {
+        if (selectedPosition > -1) {
             return (ApplicationInfo)getItemAtPosition(selectedPosition);
-        }
-        else
-        {
+        } else {
             return null;
+        }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        numOfRows = getLastVisiblePosition() - getFirstVisiblePosition();
+        yPerRow = getHeight() / numOfRows;
+
+        if (selectedPosition == -1) {
+            setSelection(0);
         }
     }
 }
