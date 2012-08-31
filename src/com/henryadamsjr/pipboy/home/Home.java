@@ -154,7 +154,7 @@ public class Home extends Activity {
         if (mList == null) {
             mList = (CustomListView)findViewById(R.id.all_apps);
         }
-       // mList.setAdapter(new ApplicationsAdapter(this, mApplications));
+        mList.setAdapter(new ApplicationsAdapter(this, mApplications));
     }
 
     /**
@@ -167,10 +167,8 @@ public class Home extends Activity {
             public void onClick(View view) {
                 FrameLayout frameLayout = (FrameLayout)view.getParent();
                 LinearLayout linearLayout = (LinearLayout)frameLayout.getParent();
-                ListView listView = (ListView)linearLayout.findViewById(R.id.all_apps);
-                ApplicationsAdapter applicationsAdapter = (ApplicationsAdapter)listView.getAdapter();
-                startActivity(applicationsAdapter.getSelectedApp().getIntent());
-
+                CustomListView listView = (CustomListView)linearLayout.findViewById(R.id.all_apps);
+                listView.launchSelectedApp();
             }
         });
     }

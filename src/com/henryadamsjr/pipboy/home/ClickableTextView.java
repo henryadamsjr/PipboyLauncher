@@ -6,6 +6,8 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.*;
 import com.henryadamsjr.pipboy.ApplicationInfo;
 import com.henryadamsjr.pipboy.R;
@@ -17,7 +19,8 @@ import com.henryadamsjr.pipboy.R;
  * Time: 3:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ClickableTextView extends TextView{
+public class ClickableTextView extends TextView //implements View.OnTouchListener
+{
 
     private ApplicationInfo appInfo;
 
@@ -27,6 +30,8 @@ public class ClickableTextView extends TextView{
     private static final int PADDING_BOTTOM = 5;
 
     private boolean inList = false;
+
+    private int index;
 
     public ClickableTextView(Context context) {
         super(context);
@@ -41,6 +46,14 @@ public class ClickableTextView extends TextView{
     public ClickableTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     private void initialize() {
@@ -93,4 +106,10 @@ public class ClickableTextView extends TextView{
     {
         setBackgroundResource(0);
     }
+
+    /*@Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return false;
+    }
+    */
 }

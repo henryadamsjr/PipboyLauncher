@@ -33,7 +33,7 @@ public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
         appContext = context;
     }
 
-    @Override
+    /*@Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ApplicationInfo info = mApplications.get(position);
 
@@ -46,5 +46,5 @@ public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfo> {
         ctv.setAppInfo(info);
 
         return convertView;
-    }
+    }*/
 }

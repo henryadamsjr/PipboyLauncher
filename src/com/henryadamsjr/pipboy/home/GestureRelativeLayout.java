@@ -17,7 +17,7 @@ import com.henryadamsjr.pipboy.R;
  * Time: 12:55 AM
  * To change this template use File | Settings | File Templates.
  */
-public class GestureRelativeLayout extends RelativeLayout  implements GestureDetector.OnGestureListener, View.OnTouchListener {
+public class GestureRelativeLayout extends RelativeLayout implements GestureDetector.OnGestureListener, View.OnTouchListener {
 
     private GestureDetector gestureDetector;
     private float density = getContext().getResources().getDisplayMetrics().density;
@@ -37,8 +37,7 @@ public class GestureRelativeLayout extends RelativeLayout  implements GestureDet
         initialize();
     }
 
-    private void initialize()
-    {
+    private void initialize() {
         setOnTouchListener(this);
         gestureDetector = new GestureDetector(getContext(), this);
     }
@@ -46,15 +45,11 @@ public class GestureRelativeLayout extends RelativeLayout  implements GestureDet
     /*
         This prevents the touch from getting to the ListView
      */
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return true;
-    }
 
     @Override
     public boolean onDown(MotionEvent motionEvent) {
         ((CustomListView)findViewById(R.id.all_apps)).setDown(motionEvent.getY());
-        Log.d("Pipboy",String.valueOf(motionEvent.getY()) );
+        Log.d("Pipboy", String.valueOf(motionEvent.getY()));
         return true;
     }
 
@@ -71,8 +66,7 @@ public class GestureRelativeLayout extends RelativeLayout  implements GestureDet
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if(Math.abs(distanceY) > Math.abs(distanceX))
-        {
+        if (Math.abs(distanceY) > Math.abs(distanceX)) {
             CustomListView clv = (CustomListView)findViewById(R.id.all_apps);
             clv.scrollSelection((int)e2.getY());
         }
