@@ -69,7 +69,7 @@ public class Home extends Activity {
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
 
-    private ListView mList;
+    private CustomListView mList;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -152,9 +152,9 @@ public class Home extends Activity {
      */
     private void bindApplications() {
         if (mList == null) {
-            mList = (ListView)findViewById(R.id.all_apps);
+            mList = (CustomListView)findViewById(R.id.all_apps);
         }
-        mList.setAdapter(new ApplicationsAdapter(this, mApplications));
+       // mList.setAdapter(new ApplicationsAdapter(this, mApplications));
     }
 
     /**

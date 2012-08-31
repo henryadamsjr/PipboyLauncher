@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.henryadamsjr.pipboy.ApplicationInfo;
@@ -15,7 +16,7 @@ import com.henryadamsjr.pipboy.ApplicationInfo;
  * Time: 5:17 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CustomListView extends ListView {
+public class CustomListView extends LinearLayout {
 
     private int selectedPosition = -1;
     private int down;
@@ -61,10 +62,9 @@ public class CustomListView extends ListView {
 
     }
 
-    @Override
     public void setSelection(int position) {
 
-        if (position < 0) {
+        /*if (position < 0) {
             position = 0;
         } else if (position > getChildCount()) {
             //position = getChildCount() - 1;
@@ -88,9 +88,7 @@ public class CustomListView extends ListView {
         if (tv2 != null) {
             tv2.select();
         }
-
-
-
+        */
         selectedPosition = position;
     }
 
@@ -98,24 +96,26 @@ public class CustomListView extends ListView {
         return selectedPosition;
     }
 
-    @Override
     public ApplicationInfo getSelectedItem() {
+        /*
         if (selectedPosition > -1) {
             return (ApplicationInfo)getItemAtPosition(selectedPosition);
         } else {
             return null;
         }
+        */
+        return null;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        /*super.onDraw(canvas);
 
         numOfRows = getLastVisiblePosition() - getFirstVisiblePosition();
         yPerRow = getHeight() / numOfRows;
 
         if (selectedPosition == -1) {
             setSelection(0);
-        }
+        }*/
     }
 }
