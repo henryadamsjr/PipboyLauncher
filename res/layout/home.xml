@@ -24,49 +24,11 @@
             android:id="@+id/bottom_bar"
             android:layout_width="match_parent"
             android:layout_height="65dip"
+            android:layout_gravity="center_vertical"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:orientation="horizontal">
-        <include layout="@layout/line"/>
-        <com.henryadamsjr.pipboy.home.ClickableTextView
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Weapons"
-                layout="@layout/application"/>
-        <include layout="@layout/line"/>
-        <com.henryadamsjr.pipboy.home.ClickableTextView
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Apparel"
-                layout="@layout/application"/>
-        <include layout="@layout/line"/>
-        <com.henryadamsjr.pipboy.home.ClickableTextView
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Aid"
-                layout="@layout/application"/>
-        <include layout="@layout/line"/>
-        <com.henryadamsjr.pipboy.home.ClickableTextView
-                android:text="Misc"
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                layout="@layout/application"/>
-        <include layout="@layout/line"/>
-        <com.henryadamsjr.pipboy.home.ClickableTextView
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ammo"
-                layout="@layout/application"/>
-        <include layout="@layout/line"/>
-
-
-    </LinearLayout>
+            android:orientation="horizontal"/>
 
     <LinearLayout
             android:layout_height="wrap_content"

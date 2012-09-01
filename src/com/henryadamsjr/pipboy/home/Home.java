@@ -49,6 +49,8 @@ public class Home extends Activity {
 
     public static final int FALLOUT_COLOR = Color.GREEN;
 
+    public static final String SELECTED_CATEGORY = "selectedCategory";
+
     /**
      * Keys during freeze/thaw.
      */
@@ -69,11 +71,18 @@ public class Home extends Activity {
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
 
+    private int selectedCategory = 0;
+    private String[] categories;
+
     private CustomListView mList;
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        selectedCategory = getIntent().getIntExtra(SELECTED_CATEGORY, 0);
+
+        categories = new String[]{"Weapons", "Apparel", "Aid", "Misc", "Ammo"};
 
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
@@ -300,6 +309,14 @@ public class Home extends Activity {
                 mApplications.add(application);
             }
         }
+    }
+
+    public String[] getCategories() {
+        return categories;
+    }
+
+    public int getSelectedCategory() {
+        return selectedCategory;
     }
 
     /**

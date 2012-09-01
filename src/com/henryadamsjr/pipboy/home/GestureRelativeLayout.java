@@ -1,13 +1,18 @@
 package com.henryadamsjr.pipboy.home;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ListView;
+import android.view.*;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.henryadamsjr.pipboy.R;
 
 /**
@@ -20,7 +25,7 @@ import com.henryadamsjr.pipboy.R;
 public class GestureRelativeLayout extends RelativeLayout implements GestureDetector.OnGestureListener, View.OnTouchListener {
 
     private GestureDetector gestureDetector;
-    private float density = getContext().getResources().getDisplayMetrics().density;
+
 
     public GestureRelativeLayout(Context context) {
         super(context);
@@ -49,26 +54,23 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
     @Override
     public boolean onDown(MotionEvent motionEvent) {
         ((CustomListView)findViewById(R.id.all_apps)).setDown(motionEvent.getY());
-        Log.d("Pipboy", String.valueOf(motionEvent.getY()));
         return true;
     }
 
     @Override
     public void onShowPress(MotionEvent motionEvent) {
-        Log.d("Pipboy", "Press");
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
-        Log.d("Pipboy", "SingleTapUp");
         return false;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (Math.abs(distanceY) > Math.abs(distanceX)) {
-            CustomListView clv = (CustomListView)findViewById(R.id.all_apps);
-            clv.scrollSelection((int)e2.getY());
+            CustomListView mList = (CustomListView)findViewById(R.id.all_apps);
+            mList.scrollSelection((int)e2.getY());
         }
 
         return false;
@@ -76,11 +78,35 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
-        Log.d("Pipboy", "LongPress");
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        if (Math.abs(distanceY) > Math.abs(distanceX)) {
+            float velocity = distanceY / (e2.getEventTime() - e1.getEventTime());
+            CustomListView mList = (CustomListView)findViewById(R.id.all_apps);
+            mList.flingSelection(velocity);
+        }
+        else if(Math.abs(distanceX) > Math.abs(distanceY))
+        {
+            Home home = (Home)getContext();
+
+            int newCategory = home.getSelectedCategory() + (int)(distanceX/Math.abs(distanceX));
+            if(newCategory >= home.getCategories().length)
+            {
+                newCategory = 0;
+            }
+            else if(newCategory < 0)
+            {
+                newCategory = home.getCategories().length - 1;
+            }
+
+            Intent intent = new Intent();
+            intent.setClass(getContext().getApplicationContext(), Home.class);
+            intent.putExtra(Home.SELECTED_CATEGORY, newCategory);
+
+            getContext().startActivity(intent);
+        }
         return false;
     }
 
@@ -89,4 +115,68 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         return gestureDetector.onTouchEvent(motionEvent);
     }
 
+    private TextView createCategory(LayoutInflater inflater, int index) {
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
+        TextView tv = (TextView)inflater.inflate(R.layout.category, this, false);
+
+        if (((Home)getContext()).getSelectedCategory() == index) {
+            Drawable drawable = getResources().getDrawable(R.drawable.selection_frame);
+            drawable.setColorFilter(Home.FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
+            tv.setBackgroundDrawable(drawable);
+        }
+
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        textParams.gravity = Gravity.CENTER_VERTICAL;
+        textParams.weight = 1.0f;
+
+        String[] categories = ((Home)getContext()).getCategories();
+
+        tv.setText(categories[index]);
+
+        //tv.setPadding(10, 3, 10, 5);
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+        tv.setTypeface(font);
+        tv.setTextColor(Home.FALLOUT_COLOR);
+        tv.setTextSize(20);
+        tv.setLayoutParams(textParams);
+
+        return tv;
+    }
+
+    private FrameLayout createLine(LayoutInflater inflater) {
+        LinearLayout.LayoutParams lineParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
+        lineParams.weight = 1.0f;
+        lineParams.topMargin = 30;
+        lineParams.bottomMargin = 30;
+
+        FrameLayout fl = (FrameLayout)inflater.inflate(R.layout.line, this, false);
+        fl.setLayoutParams(lineParams);
+
+        return fl;
+    }
+
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+
+        if (child.getId() == R.id.bottom_bar) {
+            LayoutInflater inflater = ((Activity)getContext()).getLayoutInflater();
+
+            for (int i = 0; i < ((Home)getContext()).getCategories().length ; i++) {
+
+                if (i == 0) {
+                    ((LinearLayout)child).addView(createLine(inflater));
+                }
+
+                ((LinearLayout)child).addView(createCategory(inflater, i));
+
+
+                ((LinearLayout)child).addView(createLine(inflater));
+            }
+
+            invalidate();
+        }
+
+        super.addView(child, index, params);
+    }
 }
