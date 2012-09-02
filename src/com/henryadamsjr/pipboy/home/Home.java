@@ -75,14 +75,15 @@ public class Home extends Activity {
     private String[] categories;
 
     private CustomListView mList;
+    private GestureRelativeLayout mLayout;
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        selectedCategory = getIntent().getIntExtra(SELECTED_CATEGORY, 0);
-
         categories = new String[]{"Weapons", "Apparel", "Aid", "Misc", "Ammo"};
+
+        selectedCategory = 0;
 
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
@@ -98,6 +99,8 @@ public class Home extends Activity {
         bindButtons();
     }
 
+
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -106,6 +109,9 @@ public class Home extends Activity {
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             getWindow().closeAllPanels();
         }
+
+        selectedCategory = intent.getIntExtra(SELECTED_CATEGORY, 0);
+        mLayout.selectCategory();
     }
 
     @Override
@@ -163,7 +169,13 @@ public class Home extends Activity {
         if (mList == null) {
             mList = (CustomListView)findViewById(R.id.all_apps);
         }
+
         mList.setAdapter(new ApplicationsAdapter(this, mApplications));
+
+        if(mLayout == null){
+            mLayout = (GestureRelativeLayout)findViewById(R.id.home);
+        }
+
     }
 
     /**
@@ -330,5 +342,7 @@ public class Home extends Activity {
             bindRecents();
         }
     }
+
+
 
 }

@@ -25,24 +25,27 @@ import com.henryadamsjr.pipboy.R;
 public class GestureRelativeLayout extends RelativeLayout implements GestureDetector.OnGestureListener, View.OnTouchListener {
 
     private GestureDetector gestureDetector;
+    private Home home;
+    private TextView[] categoryViews;
 
 
     public GestureRelativeLayout(Context context) {
         super(context);
-        initialize();
+        initialize(context);
     }
 
     public GestureRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initialize();
+        initialize(context);
     }
 
     public GestureRelativeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        initialize();
+        initialize(context);
     }
 
-    private void initialize() {
+    private void initialize(Context context) {
+        home = (Home)context;
         setOnTouchListener(this);
         gestureDetector = new GestureDetector(getContext(), this);
     }
@@ -86,18 +89,13 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
             float velocity = distanceY / (e2.getEventTime() - e1.getEventTime());
             CustomListView mList = (CustomListView)findViewById(R.id.all_apps);
             mList.flingSelection(velocity);
-        }
-        else if(Math.abs(distanceX) > Math.abs(distanceY))
-        {
+        } else if (Math.abs(distanceX) > Math.abs(distanceY)) {
             Home home = (Home)getContext();
 
-            int newCategory = home.getSelectedCategory() + (int)(distanceX/Math.abs(distanceX));
-            if(newCategory >= home.getCategories().length)
-            {
+            int newCategory = home.getSelectedCategory() + (int)(distanceX / Math.abs(distanceX));
+            if (newCategory >= home.getCategories().length) {
                 newCategory = 0;
-            }
-            else if(newCategory < 0)
-            {
+            } else if (newCategory < 0) {
                 newCategory = home.getCategories().length - 1;
             }
 
@@ -115,31 +113,41 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         return gestureDetector.onTouchEvent(motionEvent);
     }
 
+    public void selectCategory() {
+        for (int i = 0; i < home.getCategories().length; i++) {
+
+            categoryViews[i].setBackgroundResource(0);
+
+            if (home.getSelectedCategory() == i) {
+                Drawable drawable = getResources().getDrawable(R.drawable.selection_frame);
+                drawable.setColorFilter(Home.FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
+                categoryViews[i].setBackgroundDrawable(drawable);
+            }
+        }
+    }
+
     private TextView createCategory(LayoutInflater inflater, int index) {
         Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
         TextView tv = (TextView)inflater.inflate(R.layout.category, this, false);
-
-        if (((Home)getContext()).getSelectedCategory() == index) {
-            Drawable drawable = getResources().getDrawable(R.drawable.selection_frame);
-            drawable.setColorFilter(Home.FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
-            tv.setBackgroundDrawable(drawable);
-        }
 
         LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         textParams.gravity = Gravity.CENTER_VERTICAL;
         textParams.weight = 1.0f;
 
-        String[] categories = ((Home)getContext()).getCategories();
+        String[] categories = home.getCategories();
 
         tv.setText(categories[index]);
 
-        //tv.setPadding(10, 3, 10, 5);
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
         tv.setTypeface(font);
         tv.setTextColor(Home.FALLOUT_COLOR);
         tv.setTextSize(20);
         tv.setLayoutParams(textParams);
+
+        tv.setBackgroundResource(R.drawable.selection_frame);
+
+        categoryViews[index] = tv;
 
         return tv;
     }
@@ -159,10 +167,14 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
 
+        super.addView(child, index, params);
+
         if (child.getId() == R.id.bottom_bar) {
             LayoutInflater inflater = ((Activity)getContext()).getLayoutInflater();
 
-            for (int i = 0; i < ((Home)getContext()).getCategories().length ; i++) {
+            categoryViews = new TextView[home.getCategories().length];
+
+            for (int i = 0; i < home.getCategories().length; i++) {
 
                 if (i == 0) {
                     ((LinearLayout)child).addView(createLine(inflater));
@@ -173,10 +185,7 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
                 ((LinearLayout)child).addView(createLine(inflater));
             }
-
-            invalidate();
+            selectCategory();
         }
-
-        super.addView(child, index, params);
     }
 }

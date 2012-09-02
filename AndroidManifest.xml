@@ -38,7 +38,7 @@
           android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
         <activity android:name=".home.Home"
-                android:launchMode="standard"
+                android:launchMode="singleInstance"
                 android:stateNotNeeded="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
