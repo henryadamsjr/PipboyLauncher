@@ -39,11 +39,16 @@
             android:layout_above="@id/bottom_bar"
             android:orientation="horizontal">
         <FrameLayout
-                    android:id="@+id/scroll"
                     android:layout_height="match_parent"
-                    android:layout_width="0px"
-                    android:layout_weight="1"
-                    android:background="@drawable/scroll_line"/>
+                    android:layout_width="30dp">
+            <View
+                android:layout_height="match_parent"
+                android:layout_width="5dp"
+                    android:background="@drawable/scroll_line"
+                    android:layout_gravity="center_horizontal"/>
+
+
+                </FrameLayout>
         <!-- All applications on the top side of the screen-->
         <com.henryadamsjr.pipboy.home.CustomListView
                 android:id="@+id/all_apps"
