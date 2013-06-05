@@ -8,10 +8,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.*;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import com.henryadamsjr.pipboy.R;
 import com.henryadamsjr.pipboy.Util;
 
@@ -152,17 +149,18 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         return tv;
     }
 
-    private FrameLayout createLine(LayoutInflater inflater) {
+    private ImageView createLine(LayoutInflater inflater) {
 
         int lineHeight = Util.getPXfromDP(getResources().getDisplayMetrics(), 5.0f);
 
-        LinearLayout.LayoutParams lineParams = new LinearLayout.LayoutParams(0, lineHeight);
+        LinearLayout.LayoutParams lineParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
         lineParams.weight = 1.0f;
         lineParams.gravity = Gravity.CENTER_VERTICAL;
 
-        FrameLayout fl = new FrameLayout(getContext());
+        ImageView fl = new ImageView(getContext());
 
-        fl.setBackgroundColor(Home.FALLOUT_COLOR);
+        //fl.setBackgroundColor(Home.FALLOUT_COLOR);
+        fl.setImageDrawable(getResources().getDrawable(R.drawable.bottom_left));
         fl.setLayoutParams(lineParams);
 
         return fl;
