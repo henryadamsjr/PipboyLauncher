@@ -49,11 +49,6 @@ public class CustomListView extends LinearLayout {
         initialize();
     }
 
-    public CustomListView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        initialize();
-    }
-
     private void initialize() {
         setOrientation(VERTICAL);
 
