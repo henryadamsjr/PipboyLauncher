@@ -24,39 +24,42 @@
      own application, the package name must be changed from "com.example.*"
      to come from a domain that you own or have control over. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-		package="com.henryadamsjr.pipboy">
+          package="com.henryadamsjr.pipboy">
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.SET_WALLPAPER" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
 
     <application android:persistent="true"
-          android:label="@string/home_title"
-          android:icon="@drawable/ic_launcher_vaultboy"
-          android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+                 android:label="@string/home_title"
+                 android:icon="@drawable/ic_launcher_vaultboy"
+                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
         <activity android:name=".home.Home"
-                android:launchMode="singleInstance"
-                android:stateNotNeeded="true">
+                  android:launchMode="singleInstance"
+                  android:stateNotNeeded="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.HOME"/>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <activity android:name="Wallpaper"
-                android:label="Wallpaper"
-                android:screenOrientation="landscape"
-                android:icon="@drawable/bg_android_icon">
+                  android:label="Wallpaper"
+                  android:screenOrientation="landscape"
+                  android:icon="@drawable/bg_android_icon">
             <intent-filter>
-                <action android:name="android.intent.action.SET_WALLPAPER" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.SET_WALLPAPER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
     </application>
+
+    <uses-sdk android:minSdkVersion="10"
+              android:targetSdkVersion="17"/>
 </manifest>
