@@ -19,53 +19,67 @@
         android:id="@+id/home"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <!-- Favorites and Recents -->
+
+    <include layout="@layout/left_bar"
+             android:id="@+id/left_bar"
+             android:layout_alignParentLeft="true"
+             android:layout_alignParentBottom="true"
+             android:layout_alignParentTop="true"
+             />
+    <FrameLayout
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="65dip"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/left_bar"
+            >
+        <View
+              android:layout_width="match_parent"
+              android:layout_height="2dp"
+              android:layout_gravity="center_vertical"
+              android:background="@color/piptext"/>
+    </FrameLayout>
+
+    <!-- The Bottom bar-->
     <LinearLayout
             android:id="@+id/bottom_bar"
             android:layout_width="match_parent"
             android:layout_height="65dip"
             android:layout_gravity="center_vertical"
-            android:layout_alignParentLeft="true"
+            android:layout_toRightOf="@id/left_bar"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:orientation="horizontal"
             android:baselineAligned="false">
 
+        <include layout="@layout/line"/>
+        <include layout="@layout/category"/>
+        <include layout="@layout/line"/>
+        <include layout="@layout/category"/>
+        <include layout="@layout/line"/>
+        <include layout="@layout/category"/>
+        <include layout="@layout/line"/>
+        <include layout="@layout/category"/>
+        <include layout="@layout/line"/>
+        <include layout="@layout/category"/>
+        <include layout="@layout/line"/>
 
-        <include layout="@layout/line"/>
-        <include layout="@layout/category"/>
-        <include layout="@layout/line"/>
-        <include layout="@layout/category"/>
-        <include layout="@layout/line"/>
-        <include layout="@layout/category"/>
-        <include layout="@layout/line"/>
-        <include layout="@layout/category"/>
-        <include layout="@layout/line"/>
-        <include layout="@layout/category"/>
-        <include layout="@layout/line"/>
+        <include layout="@layout/bottom_right_gradient"/>
 
     </LinearLayout>
 
+    <!-- Container for the apps list and images-->
     <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/left_bar"
+            android:layout_below="@id/top_bar"
             android:layout_alignParentRight="true"
             android:layout_above="@id/bottom_bar"
+            android:paddingLeft="30dp"
             android:orientation="horizontal">
-        <FrameLayout
-                android:layout_height="match_parent"
-                android:layout_width="30dp">
-            <View
-                    android:layout_height="match_parent"
-                    android:layout_width="5dp"
-                    android:background="@drawable/scroll_line"
-                    android:layout_gravity="center_horizontal"/>
 
-
-        </FrameLayout>
-        <!-- All applications on the top side of the screen-->
         <com.henryadamsjr.pipboy.home.CustomListView
                 android:id="@+id/all_apps"
                 android:layout_weight="10"
@@ -73,7 +87,7 @@
                 android:layout_width="0px"/>
         <FrameLayout
                 android:layout_weight="10"
-                android:layout_width="0px"
+                android:layout_width="0dp"
                 android:layout_height="match_parent">
             <ImageView
                     android:id="@+id/app_icon"

@@ -1,27 +1,24 @@
 package com.henryadamsjr.pipboy.home;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.*;
-import android.widget.*;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.henryadamsjr.pipboy.R;
 import com.henryadamsjr.pipboy.Util;
-
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
  * User: hadams
  * Date: 8/29/12
  * Time: 12:55 AM
- * To change this template use File | Settings | File Templates.
+ *
+ * Allows the RelativeLayout to respond to gestures.
  */
 public class GestureRelativeLayout extends RelativeLayout implements GestureDetector.OnGestureListener, View.OnTouchListener {
 
@@ -136,30 +133,6 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
                     Util.convertDpToPixel(10, getContext()),  //right
                     Util.convertDpToPixel(5, getContext()));  //bottom
         }
-    }
-
-    private TextView createCategory(LayoutInflater inflater, int index) {
-        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
-        TextView tv = (TextView) inflater.inflate(R.layout.category, this, false);
-
-        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        textParams.gravity = Gravity.CENTER_VERTICAL;
-        textParams.weight = 1.0f;
-
-        String[] categories = home.getCategories();
-
-        tv.setText(categories[index]);
-
-        tv.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        tv.setLayoutParams(textParams);
-
-        tv.setBackgroundResource(R.drawable.selection_frame);
-
-        categoryViews[index] = tv;
-
-        return tv;
     }
 
     @Override

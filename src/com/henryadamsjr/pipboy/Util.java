@@ -9,7 +9,9 @@ import android.util.DisplayMetrics;
  * User: hadams
  * Date: 9/5/12
  * Time: 6:55 PM
- * To change this template use File | Settings | File Templates.
+ *
+ * Place to store utility functions that could be useful in other projects.  Once it gets big enough, it might
+ * get its own package.
  */
 public class Util{
 
