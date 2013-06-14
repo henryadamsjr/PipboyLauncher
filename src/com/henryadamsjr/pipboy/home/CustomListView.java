@@ -41,24 +41,28 @@ public class CustomListView extends LinearLayout {
 
     public CustomListView(Context context) {
         super(context);
-        initialize();
+        if (!isInEditMode()) {
+            initialize();
+        }
     }
 
     public CustomListView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initialize();
+        if (!isInEditMode()) {
+            initialize();
+        }
     }
 
     private void initialize() {
         setOrientation(VERTICAL);
 
-        LayoutInflater inflater = ((Activity)getContext()).getLayoutInflater();
+        LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
         Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
 
         views = new TextView[numberOfTextFields];
 
         for (int i = 0; i < numberOfTextFields; i++) {
-            TextView tv = (TextView)inflater.inflate(R.layout.application, this, false);
+            TextView tv = (TextView) inflater.inflate(R.layout.application, this, false);
             tv.setTypeface(font);
             tv.setTextColor(Home.FALLOUT_COLOR);
             tv.setTextSize(20);
@@ -74,11 +78,11 @@ public class CustomListView extends LinearLayout {
     }
 
     public void setDown(float d) {
-        down = (int)d;
+        down = (int) d;
     }
 
     public void flingSelection(float velocity) {
-        scrollSelectionBy(((int)velocity / getYPerRow()) * 2);
+        scrollSelectionBy(((int) velocity / getYPerRow()) * 2);
     }
 
     private void scrollSelectionBy(int numOfMovements) {
@@ -173,7 +177,7 @@ public class CustomListView extends LinearLayout {
 
         select(views[position - firstVisiblePosition]);
 
-        ImageView iv = (ImageView)((View)getParent().getParent()).findViewById(R.id.app_icon);
+        ImageView iv = (ImageView) ((View) getParent().getParent()).findViewById(R.id.app_icon);
         iv.setImageDrawable(adapter.getItem(position).getIcon());
 
         selectedPosition = position;
