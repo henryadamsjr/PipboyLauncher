@@ -47,7 +47,7 @@ public class Home extends Activity {
      */
     public static final String LOG_TAG = "Pipboy";
 
-    public static final int FALLOUT_COLOR = Color.GREEN;
+    public static int FALLOUT_COLOR = Color.WHITE;
 
     public static final String SELECTED_CATEGORY = "selectedCategory";
 
@@ -80,6 +80,8 @@ public class Home extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        FALLOUT_COLOR = getResources().getColor(R.color.piptext);
 
         categories = new String[]{"Weapons", "Apparel", "Aid", "Misc", "Ammo"};
 
