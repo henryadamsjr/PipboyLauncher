@@ -12,6 +12,8 @@ import android.widget.*;
 import com.henryadamsjr.pipboy.R;
 import com.henryadamsjr.pipboy.Util;
 
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: hadams
@@ -23,8 +25,7 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
     private GestureDetector gestureDetector;
     private Home home;
-    private TextView[] categoryViews;
-
+    private TextView[] categoryViews = new TextView[5];
 
     public GestureRelativeLayout(Context context) {
         super(context);
@@ -155,49 +156,29 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         return tv;
     }
 
-    private View createLine(LayoutInflater inflater) {
-
-        /*int lineHeight = Util.getPXfromDP(getResources().getDisplayMetrics(), 5.0f);
-
-        LinearLayout.LayoutParams lineParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
-        lineParams.weight = 1.0f;
-        lineParams.gravity = Gravity.CENTER_VERTICAL;
-
-        ImageView fl = new ImageView(getContext());
-
-        //fl.setBackgroundColor(Home.FALLOUT_COLOR);
-        fl.setImageDrawable(getResources().getDrawable(R.drawable.bottom_left));
-        fl.setLayoutParams(lineParams);
-
-        return fl;          */
-
-        View v = inflater.inflate(R.layout.line, null);
-
-        return v;
-    }
-
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
 
         super.addView(child, index, params);
 
-        /*if (child.getId() == R.id.bottom_bar && !isInEditMode()) {
-            LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
+        if (child.getId() == R.id.bottom_bar && !isInEditMode()) {
+            LinearLayout ll = (LinearLayout)child;
+            String categories[] = home.getCategories();
+            int currentCategory = 0;
 
-            categoryViews = new TextView[home.getCategories().length];
 
-            for (int i = 0; i < home.getCategories().length; i++) {
+            for(int i = 0; i < ll.getChildCount(); i++){
+                if(ll.getChildAt(i) instanceof TextView)    {
 
-                if (i == 0) {
-                    ((LinearLayout) child).addView(createLine(inflater));
+                    TextView tv = (TextView)ll.getChildAt(i);
+                    tv.setTypeface(Home.FONT);
+                    tv.setText(categories[currentCategory]);
+                    categoryViews[currentCategory] = tv;
+                    currentCategory++;
                 }
-
-                ((LinearLayout) child).addView(createCategory(inflater, i));
-
-
-                ((LinearLayout) child).addView(createLine(inflater));
             }
+
             selectCategory();
-        } */
+        }
     }
 }

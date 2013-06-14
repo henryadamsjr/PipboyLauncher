@@ -48,6 +48,7 @@ public class Home extends Activity {
     public static final String LOG_TAG = "Pipboy";
 
     public static int FALLOUT_COLOR = Color.WHITE;
+    public static Typeface FONT;
 
     public static final String SELECTED_CATEGORY = "selectedCategory";
 
@@ -82,6 +83,7 @@ public class Home extends Activity {
         super.onCreate(icicle);
 
         FALLOUT_COLOR = getResources().getColor(R.color.piptext);
+        FONT = Typeface.createFromAsset(getAssets(), "monofont.ttf");
 
         categories = new String[]{"Weapons", "Apparel", "Aid", "Misc", "Ammo"};
 

@@ -57,13 +57,13 @@ public class CustomListView extends LinearLayout {
         setOrientation(VERTICAL);
 
         LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
-        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "monofont.ttf");
+
 
         views = new TextView[numberOfTextFields];
 
         for (int i = 0; i < numberOfTextFields; i++) {
             TextView tv = (TextView) inflater.inflate(R.layout.application, this, false);
-            tv.setTypeface(font);
+            tv.setTypeface(Home.FONT);
             tv.setTextColor(Home.FALLOUT_COLOR);
             tv.setTextSize(20);
             tv.setPadding(PADDING_LEFT, PADDING_TOP, PADDING_RIGHT, PADDING_BOTTOM);
