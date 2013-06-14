@@ -3,10 +3,12 @@ package com.henryadamsjr.pipboy.home;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.*;
 import com.henryadamsjr.pipboy.R;
@@ -127,6 +129,12 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
                 drawable.setColorFilter(Home.FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
                 categoryViews[i].setBackgroundDrawable(drawable);
             }
+
+            categoryViews[i].setPadding(
+                    Util.convertDpToPixel(10, getContext()),  //left
+                    Util.convertDpToPixel(3, getContext()),   //top
+                    Util.convertDpToPixel(10, getContext()),  //right
+                    Util.convertDpToPixel(5, getContext()));  //bottom
         }
     }
 
@@ -144,9 +152,7 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         tv.setText(categories[index]);
 
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        tv.setTypeface(font);
-        tv.setTextColor(Home.FALLOUT_COLOR);
-        tv.setTextSize(20);
+
         tv.setLayoutParams(textParams);
 
         tv.setBackgroundResource(R.drawable.selection_frame);
@@ -162,15 +168,15 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         super.addView(child, index, params);
 
         if (child.getId() == R.id.bottom_bar && !isInEditMode()) {
-            LinearLayout ll = (LinearLayout)child;
+            LinearLayout ll = (LinearLayout) child;
             String categories[] = home.getCategories();
             int currentCategory = 0;
 
 
-            for(int i = 0; i < ll.getChildCount(); i++){
-                if(ll.getChildAt(i) instanceof TextView)    {
+            for (int i = 0; i < ll.getChildCount(); i++) {
+                if (ll.getChildAt(i) instanceof TextView) {
 
-                    TextView tv = (TextView)ll.getChildAt(i);
+                    TextView tv = (TextView) ll.getChildAt(i);
                     tv.setTypeface(Home.FONT);
                     tv.setText(categories[currentCategory]);
                     categoryViews[currentCategory] = tv;
