@@ -2,16 +2,15 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="@dimen/sidebar_width"
-             android:layout_height="match_parent">
+             android:layout_height="@dimen/top_bottom_height">
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="2dp"
             android:layout_gravity="left"
             android:layout_height="match_parent">
-        <include layout="@layout/up_gradient_layout"/>
-        <include layout="@layout/gradient_spacer"/>
-        <include layout="@layout/gradient_spacer"/>
         <include layout="@layout/gradient_balancer"/>
-    </LinearLayout>
 
+        <include layout="@layout/gradient_spacer"/>
+        <include layout="@layout/down_gradient_layout"/>
+    </LinearLayout>
 </FrameLayout>
