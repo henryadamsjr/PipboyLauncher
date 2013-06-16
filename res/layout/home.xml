@@ -28,14 +28,17 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentLeft="true"
             android:orientation="horizontal"
-            >
+            android:baselineAligned="false">
         <include layout="@layout/top_left_gradient"/>
+        <include layout="@layout/line"/>
+        <include layout="@layout/category"
+                 android:id="@+id/screen_mode_name"/>
         <View
-                android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:layout_gravity="center_vertical"
-                android:background="@color/piptext"
-                android:layout_weight="1"/>
+              android:layout_width="0dp"
+              android:layout_height="@dimen/line_width"
+              android:layout_gravity="center_vertical"
+              android:layout_weight="20"
+              android:background="@color/piptext"/>
         <include layout="@layout/top_right_gradient"/>
     </LinearLayout>
 
@@ -71,6 +74,7 @@
 
     <!-- Container for the apps list and icons-->
     <LinearLayout
+            android:id="@+id/middle_section"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_alignParentLeft="true"
@@ -79,7 +83,8 @@
             android:layout_above="@id/bottom_bar"
             android:orientation="horizontal">
 
-        <include layout="@layout/scrollbar"/>
+        <include layout="@layout/scrollbar"
+                 android:id="@+id/scrollbar"/>
 
 
         <com.henryadamsjr.pipboy.home.CustomListView

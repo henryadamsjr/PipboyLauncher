@@ -28,5 +28,35 @@
     <string name="wallpaper_instructions">Tap picture to set portrait wallpaper</string>
 
     <string name="none">Ammo</string>
+
+    <string-array name="screen_modes">
+        <item>S T A T S</item>
+        <item>I T E M S</item>
+        <item>D A T A</item>
+    </string-array>
+
+    <string-array name="stats">
+        <item>Status</item>
+        <item>S.P.E.C.I.A.L.</item>
+        <item>Skills</item>
+        <item>Perks</item>
+        <item>General</item>
+    </string-array>
+
+    <string-array name="items">
+        <item>Weapons</item>
+        <item>Apparel</item>
+        <item>Aid</item>
+        <item>Misc</item>
+        <item>Ammo</item>
+    </string-array>
+
+    <string-array name="data">
+        <item>Local Map</item>
+        <item>World Map</item>
+        <item>Quests</item>
+        <item>Notes</item>
+        <item>Radio</item>
+    </string-array>
 </resources>
 

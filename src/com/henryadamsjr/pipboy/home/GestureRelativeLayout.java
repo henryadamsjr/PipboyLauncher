@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.*;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -24,7 +25,8 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
     private GestureDetector gestureDetector;
     private Home home;
-    private TextView[] categoryViews = new TextView[5];
+    private TextView[] categoryViews;
+    private String[] categories;
 
     public GestureRelativeLayout(Context context) {
         super(context);
@@ -51,6 +53,8 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         home = (Home) context;
         setOnTouchListener(this);
         gestureDetector = new GestureDetector(getContext(), this);
+        categories = home.getCategories();
+        categoryViews = new TextView[categories.length];
     }
 
     /*
@@ -93,18 +97,30 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
             CustomListView mList = (CustomListView) findViewById(R.id.all_apps);
             mList.flingSelection(velocity);
         } else if (Math.abs(distanceX) > Math.abs(distanceY)) {
-            Home home = (Home) getContext();
 
-            int newCategory = home.getSelectedCategory() + (int) (distanceX / Math.abs(distanceX));
-            if (newCategory >= home.getCategories().length) {
+            /**int newCategory = home.getSelectedCategory() + (int) (distanceX / Math.abs(distanceX));
+            if (newCategory >= categories.length) {
                 newCategory = 0;
             } else if (newCategory < 0) {
-                newCategory = home.getCategories().length - 1;
+                newCategory = categories.length - 1;
             }
 
             Intent intent = new Intent();
             intent.setClass(getContext().getApplicationContext(), Home.class);
             intent.putExtra(Home.SELECTED_CATEGORY, newCategory);
+                        */
+            int newScreenMode = home.getSelectedScreenMode() + (int) (distanceX / Math.abs(distanceX));
+            if (newScreenMode > 2) {
+                newScreenMode = 0;
+            } else if (newScreenMode < 0) {
+                newScreenMode = 2;  //FIX THIS
+            }
+
+            Log.d(Home.LOG_TAG, "New Screen Mode: " + newScreenMode);
+
+            Intent intent = new Intent();
+            intent.setClass(getContext().getApplicationContext(), Home.class);
+            intent.putExtra(Home.SCREEN_MODE, newScreenMode);
 
             getContext().startActivity(intent);
         }
@@ -117,7 +133,7 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
     }
 
     public void selectCategory() {
-        for (int i = 0; i < home.getCategories().length; i++) {
+        for (int i = 0; i < categories.length; i++) {
 
             categoryViews[i].setBackgroundResource(0);
 
@@ -129,9 +145,9 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
             categoryViews[i].setPadding(
                     Util.convertDpToPixel(10, getContext()),  //left
-                    Util.convertDpToPixel(3, getContext()),   //top
+                    Util.convertDpToPixel(1, getContext()),   //top
                     Util.convertDpToPixel(10, getContext()),  //right
-                    Util.convertDpToPixel(5, getContext()));  //bottom
+                    Util.convertDpToPixel(3, getContext()));  //bottom
         }
     }
 
@@ -140,14 +156,22 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
         super.addView(child, index, params);
 
+        setScreen();
+
+        /**if (child.getId() == R.id.middle_section && !isInEditMode()) {
+            LinearLayout ll = (LinearLayout) child;
+            ll.removeView(findViewById(R.id.scrollbar));
+        }                         */
+
+
+
         if (child.getId() == R.id.bottom_bar && !isInEditMode()) {
             LinearLayout ll = (LinearLayout) child;
-            String categories[] = home.getCategories();
             int currentCategory = 0;
 
 
             for (int i = 0; i < ll.getChildCount(); i++) {
-                if (ll.getChildAt(i) instanceof TextView) {
+                if (ll.getChildAt(i) instanceof TextView && currentCategory < categories.length) {
 
                     TextView tv = (TextView) ll.getChildAt(i);
                     tv.setTypeface(Home.FONT);
@@ -159,5 +183,12 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
             selectCategory();
         }
+
+    }
+
+    public void setScreen(){
+        TextView screenModeName = (TextView)findViewById(R.id.screen_mode_name);
+        screenModeName.setText(home.getScreenModeName());
+        screenModeName.setTypeface(Home.FONT);
     }
 }

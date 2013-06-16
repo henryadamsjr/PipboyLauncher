@@ -30,6 +30,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
@@ -51,6 +52,16 @@ public class Home extends Activity {
     public static Typeface FONT;
 
     public static final String SELECTED_CATEGORY = "selectedCategory";
+    public static final String SCREEN_MODE = "screenMode";
+
+    /**
+     * Constants to relate the screen mode ID to the type of screen.
+     */
+
+    public static final int STATS = 0;
+    public static final int ITEMS = 1;
+    public static final int DATA = 2;
+
 
     /**
      * Keys during freeze/thaw.
@@ -72,8 +83,10 @@ public class Home extends Activity {
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
 
-    private int selectedCategory = 0;
+    private int selectedCategory;
+    private int selectedScreenMode;
     private String[] categories;
+    private String[] screenModes;
 
     private CustomListView mList;
     private GestureRelativeLayout mLayout;
@@ -85,9 +98,12 @@ public class Home extends Activity {
         FALLOUT_COLOR = getResources().getColor(R.color.piptext);
         FONT = Typeface.createFromAsset(getAssets(), "monofont.ttf");
 
-        categories = new String[]{"Weapons", "Apparel", "Aid", "Misc", "Ammo"};
+        screenModes = getResources().getStringArray(R.array.screen_modes);
 
         selectedCategory = 0;
+        selectedScreenMode = 2;
+
+        setUpScreenMode();
 
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
@@ -107,6 +123,7 @@ public class Home extends Activity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        Log.d(LOG_TAG, "Received new intent");
         super.onNewIntent(intent);
 
         // Close the menu
@@ -115,8 +132,37 @@ public class Home extends Activity {
         }
 
         selectedCategory = intent.getIntExtra(SELECTED_CATEGORY, 0);
+        selectedScreenMode = intent.getIntExtra(SCREEN_MODE, 0);
+
+        Log.d(LOG_TAG, "New Intent Selected Screen mode is: " + selectedScreenMode);
+
+        setUpScreenMode();
+        mLayout.setScreen();
+
         mLayout.selectCategory();
     }
+
+    private void setUpScreenMode()   {
+
+        int chosenModeId;
+
+        switch(selectedScreenMode){
+            case STATS:
+                chosenModeId = R.array.stats;
+                break;
+            case ITEMS:
+                chosenModeId = R.array.items;
+                break;
+            case DATA:
+                chosenModeId = R.array.data;
+                break;
+            default:
+                chosenModeId = STATS;
+        }
+
+        categories = getResources().getStringArray(chosenModeId);
+    }
+
 
     @Override
     public void onDestroy() {
@@ -333,6 +379,14 @@ public class Home extends Activity {
 
     public int getSelectedCategory() {
         return selectedCategory;
+    }
+
+    public String getScreenModeName(){
+        return screenModes[selectedScreenMode];
+    }
+
+    public int getSelectedScreenMode(){
+        return selectedScreenMode;
     }
 
     /**
