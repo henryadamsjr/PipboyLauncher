@@ -10,7 +10,6 @@
             android:layout_height="match_parent">
         <include layout="@layout/up_gradient_layout"/>
         <include layout="@layout/gradient_spacer"/>
-        <include layout="@layout/gradient_spacer"/>
         <include layout="@layout/gradient_balancer"/>
     </LinearLayout>
 

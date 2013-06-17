@@ -4,4 +4,4 @@
       android:layout_height="0dp"
       android:layout_width="match_parent"
       android:background="@drawable/down_gradient"
-      android:layout_weight="49"/>
+      android:layout_weight="1"/>

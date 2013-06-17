@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="sidebar_width">10dp</dimen>
-    <dimen name="top_bottom_height">70dp</dimen>
+    <dimen name="top_bottom_height">50dp</dimen>
     <dimen name="line_width">2dp</dimen>
 </resources>
