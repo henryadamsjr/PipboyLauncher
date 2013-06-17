@@ -38,22 +38,25 @@ public class CustomListView extends LinearLayout {
     private TextView[] views;
     private int firstVisiblePosition = 0;
     private int maxFirstVisiblePosition;
+    private Home home;
 
     public CustomListView(Context context) {
         super(context);
         if (!isInEditMode()) {
-            initialize();
+            initialize(context);
         }
     }
 
     public CustomListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         if (!isInEditMode()) {
-            initialize();
+            initialize(context);
         }
     }
 
-    private void initialize() {
+    private void initialize(Context context) {
+        home = (Home)context;
+
         setOrientation(VERTICAL);
 
         LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
@@ -63,8 +66,8 @@ public class CustomListView extends LinearLayout {
 
         for (int i = 0; i < numberOfTextFields; i++) {
             TextView tv = (TextView) inflater.inflate(R.layout.application, this, false);
-            tv.setTypeface(Home.FONT);
-            tv.setTextColor(Home.FALLOUT_COLOR);
+            tv.setTypeface(home.getFont());
+            tv.setTextColor(home.getPipboyColor());
             tv.setTextSize(20);
             tv.setPadding(PADDING_LEFT, PADDING_TOP, PADDING_RIGHT, PADDING_BOTTOM);
 
@@ -87,7 +90,6 @@ public class CustomListView extends LinearLayout {
 
     private void scrollSelectionBy(int numOfMovements) {
 
-
         if (numOfMovements != 0) {
             down = down + (numOfMovements * getYPerRow());
             int movementDirection = numOfMovements / Math.abs(numOfMovements);
@@ -109,7 +111,6 @@ public class CustomListView extends LinearLayout {
         if (distanceY != 0) {
 
             scrollSelectionBy(distanceY / getYPerRow());
-
         }
     }
 
@@ -146,7 +147,7 @@ public class CustomListView extends LinearLayout {
 
     public void select(TextView selection) {
         Drawable drawable = getResources().getDrawable(R.drawable.selection_frame);
-        drawable.setColorFilter(Home.FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
+        drawable.setColorFilter(home.getPipboyColor(), PorterDuff.Mode.MULTIPLY);
         selection.setBackgroundDrawable(drawable);
 
         selection.setPadding(PADDING_LEFT, PADDING_TOP, PADDING_RIGHT, PADDING_BOTTOM);

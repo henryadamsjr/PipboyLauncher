@@ -1,7 +1,6 @@
 package com.henryadamsjr.pipboy.home;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -11,22 +10,24 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.henryadamsjr.pipboy.R;
+import com.henryadamsjr.pipboy.ScreenInfo;
 import com.henryadamsjr.pipboy.Util;
+
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
  * User: hadams
  * Date: 8/29/12
  * Time: 12:55 AM
- *
+ * <p/>
  * Allows the RelativeLayout to respond to gestures.
  */
 public class GestureRelativeLayout extends RelativeLayout implements GestureDetector.OnGestureListener, View.OnTouchListener {
 
     private GestureDetector gestureDetector;
     private Home home;
-    private TextView[] categoryViews;
-    private String[] categories;
+    private ScreenInfo screenInfo;
 
     public GestureRelativeLayout(Context context) {
         super(context);
@@ -50,11 +51,11 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
     }
 
     private void initialize(Context context) {
+        Log.d(Home.LOG_TAG, "Initializing layout");
         home = (Home) context;
         setOnTouchListener(this);
         gestureDetector = new GestureDetector(getContext(), this);
-        categories = home.getCategories();
-        categoryViews = new TextView[categories.length];
+        screenInfo = new ScreenInfo(home);
     }
 
     /*
@@ -97,32 +98,8 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
             CustomListView mList = (CustomListView) findViewById(R.id.all_apps);
             mList.flingSelection(velocity);
         } else if (Math.abs(distanceX) > Math.abs(distanceY)) {
-
-            /**int newCategory = home.getSelectedCategory() + (int) (distanceX / Math.abs(distanceX));
-            if (newCategory >= categories.length) {
-                newCategory = 0;
-            } else if (newCategory < 0) {
-                newCategory = categories.length - 1;
-            }
-
-            Intent intent = new Intent();
-            intent.setClass(getContext().getApplicationContext(), Home.class);
-            intent.putExtra(Home.SELECTED_CATEGORY, newCategory);
-                        */
-            int newScreenMode = home.getSelectedScreenMode() + (int) (distanceX / Math.abs(distanceX));
-            if (newScreenMode > 2) {
-                newScreenMode = 0;
-            } else if (newScreenMode < 0) {
-                newScreenMode = 2;  //FIX THIS
-            }
-
-            Log.d(Home.LOG_TAG, "New Screen Mode: " + newScreenMode);
-
-            Intent intent = new Intent();
-            intent.setClass(getContext().getApplicationContext(), Home.class);
-            intent.putExtra(Home.SCREEN_MODE, newScreenMode);
-
-            getContext().startActivity(intent);
+            screenInfo.changeScreen((int) (distanceX / Math.abs(distanceX)));
+            setUpScreen();
         }
         return false;
     }
@@ -132,18 +109,20 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         return gestureDetector.onTouchEvent(motionEvent);
     }
 
-    public void selectCategory() {
-        for (int i = 0; i < categories.length; i++) {
+    public void selectCategory(TextView selectedCategory) {
+        ArrayList<TextView> categoryViews = getCategoryViews();
 
-            categoryViews[i].setBackgroundResource(0);
+        for(TextView categoryView : categoryViews){
+            categoryView.setBackgroundResource(0);
 
-            if (home.getSelectedCategory() == i) {
+            if (categoryView.equals(selectedCategory)){
+                Log.d(Home.LOG_TAG, "Selected: " + categoryView.getText());
                 Drawable drawable = getResources().getDrawable(R.drawable.selection_frame);
-                drawable.setColorFilter(Home.FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
-                categoryViews[i].setBackgroundDrawable(drawable);
+                drawable.setColorFilter(home.getPipboyColor(), PorterDuff.Mode.MULTIPLY);
+                categoryView.setBackgroundDrawable(drawable);
             }
 
-            categoryViews[i].setPadding(
+            categoryView.setPadding(
                     Util.convertDpToPixel(10, getContext()),  //left
                     Util.convertDpToPixel(1, getContext()),   //top
                     Util.convertDpToPixel(10, getContext()),  //right
@@ -156,39 +135,54 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
         super.addView(child, index, params);
 
-        setScreen();
-
         /**if (child.getId() == R.id.middle_section && !isInEditMode()) {
-            LinearLayout ll = (LinearLayout) child;
-            ll.removeView(findViewById(R.id.scrollbar));
-        }                         */
-
-
+         LinearLayout ll = (LinearLayout) child;
+         ll.removeView(findViewById(R.id.scrollbar));
+         }                         */
 
         if (child.getId() == R.id.bottom_bar && !isInEditMode()) {
-            LinearLayout ll = (LinearLayout) child;
-            int currentCategory = 0;
 
+            ArrayList<TextView> categoryViews = getCategoryViews();
 
-            for (int i = 0; i < ll.getChildCount(); i++) {
-                if (ll.getChildAt(i) instanceof TextView && currentCategory < categories.length) {
-
-                    TextView tv = (TextView) ll.getChildAt(i);
-                    tv.setTypeface(Home.FONT);
-                    tv.setText(categories[currentCategory]);
-                    categoryViews[currentCategory] = tv;
-                    currentCategory++;
-                }
+            for(TextView categoryView: categoryViews){
+                categoryView.setTypeface(home.getFont());
+                categoryView.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        selectCategory((TextView) view);
+                    }
+                });
             }
 
-            selectCategory();
+            setUpScreen();
+            selectCategory(categoryViews.get(0));
         }
-
     }
 
-    public void setScreen(){
-        TextView screenModeName = (TextView)findViewById(R.id.screen_mode_name);
-        screenModeName.setText(home.getScreenModeName());
-        screenModeName.setTypeface(Home.FONT);
+    private ArrayList<TextView> getCategoryViews(){
+
+        ArrayList<TextView> categoryViews = new ArrayList<TextView>();
+        LinearLayout ll = (LinearLayout)findViewById(R.id.bottom_bar);
+
+        for (int i = 0; i < ll.getChildCount(); i++) {
+            if (ll.getChildAt(i) instanceof TextView) {
+                categoryViews.add((TextView) ll.getChildAt(i));
+            }
+        }
+
+        return categoryViews;
+    }
+
+    public void setUpScreen() {
+        String[] categories = screenInfo.getCategories();
+        ArrayList<TextView> categoryViews = getCategoryViews();
+        TextView screenName = (TextView) findViewById(R.id.screen_mode_name);
+        screenName.setText(screenInfo.getScreenName());
+        screenName.setTypeface(home.getFont());
+
+        for(int i = 0; i < categoryViews.size(); i++){
+            if(i < categories.length){
+                categoryViews.get(i).setText(categories[i]);
+            }
+        }
     }
 }

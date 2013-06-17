@@ -48,21 +48,6 @@ public class Home extends Activity {
      */
     public static final String LOG_TAG = "Pipboy";
 
-    public static int FALLOUT_COLOR = Color.WHITE;
-    public static Typeface FONT;
-
-    public static final String SELECTED_CATEGORY = "selectedCategory";
-    public static final String SCREEN_MODE = "screenMode";
-
-    /**
-     * Constants to relate the screen mode ID to the type of screen.
-     */
-
-    public static final int STATS = 0;
-    public static final int ITEMS = 1;
-    public static final int DATA = 2;
-
-
     /**
      * Keys during freeze/thaw.
      */
@@ -83,35 +68,22 @@ public class Home extends Activity {
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
 
-    private int selectedCategory;
-    private int selectedScreenMode;
-    private String[] categories;
-    private String[] screenModes;
-
     private CustomListView mList;
     private GestureRelativeLayout mLayout;
+
+    private int pipboyColor;
+    private Typeface font;
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        FALLOUT_COLOR = getResources().getColor(R.color.piptext);
-        FONT = Typeface.createFromAsset(getAssets(), "monofont.ttf");
-
-        screenModes = getResources().getStringArray(R.array.screen_modes);
-
-        selectedCategory = 0;
-        selectedScreenMode = 2;
-
-        setUpScreenMode();
+        pipboyColor = getResources().getColor(R.color.piptext);
+        font = Typeface.createFromAsset(getAssets(), "monofont.ttf");
 
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
-
         setContentView(R.layout.home);
-
         registerIntentReceivers();
-
-        //setDefaultWallpaper();
 
         loadApplications(true);
 
@@ -130,39 +102,7 @@ public class Home extends Activity {
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
             getWindow().closeAllPanels();
         }
-
-        selectedCategory = intent.getIntExtra(SELECTED_CATEGORY, 0);
-        selectedScreenMode = intent.getIntExtra(SCREEN_MODE, 0);
-
-        Log.d(LOG_TAG, "New Intent Selected Screen mode is: " + selectedScreenMode);
-
-        setUpScreenMode();
-        mLayout.setScreen();
-
-        mLayout.selectCategory();
     }
-
-    private void setUpScreenMode()   {
-
-        int chosenModeId;
-
-        switch(selectedScreenMode){
-            case STATS:
-                chosenModeId = R.array.stats;
-                break;
-            case ITEMS:
-                chosenModeId = R.array.items;
-                break;
-            case DATA:
-                chosenModeId = R.array.data;
-                break;
-            default:
-                chosenModeId = STATS;
-        }
-
-        categories = getResources().getStringArray(chosenModeId);
-    }
-
 
     @Override
     public void onDestroy() {
@@ -364,29 +304,13 @@ public class Home extends Activity {
 
                 Drawable appIcon = info.activityInfo.loadIcon(manager);
 
-                appIcon.setColorFilter(FALLOUT_COLOR, PorterDuff.Mode.MULTIPLY);
+                appIcon.setColorFilter(pipboyColor, PorterDuff.Mode.MULTIPLY);
                 application.setIcon(appIcon);
 
 
                 mApplications.add(application);
             }
         }
-    }
-
-    public String[] getCategories() {
-        return categories;
-    }
-
-    public int getSelectedCategory() {
-        return selectedCategory;
-    }
-
-    public String getScreenModeName(){
-        return screenModes[selectedScreenMode];
-    }
-
-    public int getSelectedScreenMode(){
-        return selectedScreenMode;
     }
 
     /**
@@ -401,6 +325,11 @@ public class Home extends Activity {
         }
     }
 
+    public int getPipboyColor() {
+        return pipboyColor;
+    }
 
-
+    public Typeface getFont() {
+        return font;
+    }
 }
