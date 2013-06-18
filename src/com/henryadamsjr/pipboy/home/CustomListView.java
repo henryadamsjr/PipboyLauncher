@@ -1,19 +1,14 @@
 package com.henryadamsjr.pipboy.home;
 
 import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
-import com.henryadamsjr.pipboy.ApplicationInfo;
 import com.henryadamsjr.pipboy.ApplicationsAdapter;
 import com.henryadamsjr.pipboy.R;
 
@@ -161,11 +156,13 @@ public class CustomListView extends LinearLayout {
 
     public void setSelection(int position) {
 
+        int itemCount = adapter.getCount();
+
         if (position < 0) {
             position = 0;
         }
-        if (position > adapter.getCount() - 1) {
-            position = adapter.getCount() - 1;
+        if (position > itemCount - 1) {
+            position = itemCount - 1;
         }
 
         deselect(views[selectedPosition - firstVisiblePosition]);
@@ -182,6 +179,20 @@ public class CustomListView extends LinearLayout {
         iv.setImageDrawable(adapter.getItem(position).getIcon());
 
         selectedPosition = position;
+
+        float pagesAbove = (float)firstVisiblePosition/(float)numberOfTextFields;
+        float pagesBelow = ((float)itemCount/(float)numberOfTextFields) - (((float)firstVisiblePosition + (float)numberOfTextFields)/(float)numberOfTextFields);
+
+        LayoutParams scrollTopParams = new LinearLayout.LayoutParams(R.dimen.sidebar_width, 0, pagesAbove);
+        LayoutParams scrollBottomParams = new LinearLayout.LayoutParams(R.dimen.sidebar_width, 0, pagesBelow);
+
+        try{
+            home.findViewById(R.id.top_scrollbar_spacer).setLayoutParams(scrollTopParams);
+            home.findViewById(R.id.bottom_scrollbar_spacer).setLayoutParams(scrollBottomParams);
+        }
+        catch(NullPointerException e){
+            Log.d(Home.LOG_TAG, "Couldn't find scroll spacers");
+        }
     }
 
     public int getSelectedPosition() {

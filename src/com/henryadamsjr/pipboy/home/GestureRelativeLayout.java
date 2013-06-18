@@ -181,8 +181,10 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
         String[] categories = screenInfo.getCategories();
         ArrayList<TextView> categoryViews = getCategoryViews();
         TextView screenName = (TextView) findViewById(R.id.screen_mode_name);
-        screenName.setText(screenInfo.getScreenName());
-        screenName.setTypeface(home.getFont());
+        if(screenName != null){
+            screenName.setText(screenInfo.getScreenName());
+            screenName.setTypeface(home.getFont());
+        }
 
         for(int i = 0; i < categoryViews.size(); i++){
             if(i < categories.length){
@@ -209,7 +211,7 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
                 Log.i(Home.LOG_TAG, "level: " + level + "; scale: " + scale);
                 int percent = (level*100)/scale;
 
-                final String newBatteryLevel = String.valueOf(percent);
+                final String newBatteryLevel = "BP " + String.valueOf(percent) + "/100";
                 handler.post( new Runnable() {
 
                     public void run() {

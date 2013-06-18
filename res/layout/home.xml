@@ -49,28 +49,13 @@
              android:layout_width="wrap_content"
              android:layout_toLeftOf="@id/clock"
              android:layout_alignParentTop="true"/>
-
-    <LinearLayout
-            android:id="@+id/top_bar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bottom_height"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@id/battery"
-            android:layout_toRightOf="@id/left_bar"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
-        <include layout="@layout/line"/>
-        <include layout="@layout/category"
-                 android:id="@+id/screen_mode_name"/>
-        <View
-                android:layout_width="0dp"
-                android:layout_height="@dimen/line_width"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="20"
-                android:background="@color/piptext"/>
-
-    </LinearLayout>
-
+    <include layout="@layout/screen_mode"
+             android:id="@+id/screen_mode"
+             android:layout_width="match_parent"
+             android:layout_height="@dimen/top_bottom_height"
+             android:layout_alignParentTop="true"
+             android:layout_toRightOf="@id/left_bar"
+             android:layout_toLeftOf="@id/battery"/>
 
     <!-- The Bottom bar-->
     <LinearLayout
@@ -104,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_toRightOf="@id/left_bar"
-            android:layout_below="@id/top_bar"
+            android:layout_below="@id/screen_mode"
             android:layout_toLeftOf="@id/right_bar"
             android:layout_above="@id/bottom_bar"
             android:orientation="horizontal">
