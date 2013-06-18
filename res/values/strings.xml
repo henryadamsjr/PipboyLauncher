@@ -27,7 +27,7 @@
     <!-- Wallpaper -->
     <string name="wallpaper_instructions">Tap picture to set portrait wallpaper</string>
 
-    <string name="none">Ammo</string>
+    <string name="none">Pipboy</string>
 
     <string-array name="screen_modes">
         <item>S T A T S</item>
