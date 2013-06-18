@@ -17,6 +17,7 @@ package com.henryadamsjr.pipboy;
  */
 
 import java.util.Calendar;
+
 import android.content.Context;
 import android.database.ContentObserver;
 import android.os.Handler;
@@ -30,7 +31,7 @@ import com.henryadamsjr.pipboy.home.Home;
 
 /**
  * Like AnalogClock, but digital.  Shows seconds.
- *
+ * <p/>
  * FIXME: implement separate views for hours/minutes/seconds, so
  * proportional fonts don't shake rendering
  */
@@ -51,12 +52,16 @@ public class CustomDigitalClock extends TextView {
 
     public CustomDigitalClock(Context context) {
         super(context);
-        initClock(context);
+        if (!isInEditMode()) {
+            initClock(context);
+        }
     }
 
     public CustomDigitalClock(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initClock(context);
+        if (!isInEditMode()) {
+            initClock(context);
+        }
     }
 
     private void initClock(Context context) {
@@ -69,36 +74,40 @@ public class CustomDigitalClock extends TextView {
                 Settings.System.CONTENT_URI, true, mFormatChangeObserver);
 
         setFormat();
-        setTypeface(((Home)context).getFont());
+        setTypeface(((Home) context).getFont());
     }
 
     @Override
     protected void onAttachedToWindow() {
-        mTickerStopped = false;
-        super.onAttachedToWindow();
-        mHandler = new Handler();
+        if (!isInEditMode()) {
+            mTickerStopped = false;
+            super.onAttachedToWindow();
+            mHandler = new Handler();
 
-        /**
-         * requests a tick on the next hard-second boundary
-         */
-        mTicker = new Runnable() {
-            public void run() {
-                if (mTickerStopped) return;
-                mCalendar.setTimeInMillis(System.currentTimeMillis());
-                setText(DateFormat.format(mFormat, mCalendar));
-                invalidate();
-                long now = SystemClock.uptimeMillis();
-                long next = now + (1000 - now % 1000);
-                mHandler.postAtTime(mTicker, next);
-            }
-        };
-        mTicker.run();
+            /**
+             * requests a tick on the next hard-second boundary
+             */
+            mTicker = new Runnable() {
+                public void run() {
+                    if (mTickerStopped) return;
+                    mCalendar.setTimeInMillis(System.currentTimeMillis());
+                    setText(DateFormat.format(mFormat, mCalendar));
+                    invalidate();
+                    long now = SystemClock.uptimeMillis();
+                    long next = now + (1000 - now % 1000);
+                    mHandler.postAtTime(mTicker, next);
+                }
+            };
+            mTicker.run();
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mTickerStopped = true;
+        if (!isInEditMode()) {
+            super.onDetachedFromWindow();
+            mTickerStopped = true;
+        }
     }
 
     /**

@@ -1,8 +1,13 @@
 package com.henryadamsjr.pipboy.home;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.BatteryManager;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
@@ -137,7 +142,7 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
         /**if (child.getId() == R.id.middle_section && !isInEditMode()) {
          LinearLayout ll = (LinearLayout) child;
-         ll.removeView(findViewById(R.id.scrollbar));
+         ll.removeView(findViewById(R.id.left_bar));
          }                         */
 
         if (child.getId() == R.id.bottom_bar && !isInEditMode()) {
@@ -184,5 +189,39 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
                 categoryViews.get(i).setText(categories[i]);
             }
         }
+        setUpBattery();
+    }
+
+    private void changeBatteryText(String newBatteryLevel){
+        TextView battery = (TextView)findViewById(R.id.battery_text);
+        battery.setText(newBatteryLevel);
+        battery.setTypeface(home.getFont());
+    }
+
+    private void setUpBattery(){
+        final Handler handler = new Handler();
+
+        BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, Intent intent) {
+                int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+                int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
+                Log.i(Home.LOG_TAG, "level: " + level + "; scale: " + scale);
+                int percent = (level*100)/scale;
+
+                final String newBatteryLevel = String.valueOf(percent);
+                handler.post( new Runnable() {
+
+                    public void run() {
+                        changeBatteryText(newBatteryLevel);
+                    }
+                });
+            }
+        };
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+
+        home.registerReceiver(mBatInfoReceiver, filter);
     }
 }

@@ -20,42 +20,70 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+    <include layout="@layout/left_bar"
+             android:id="@+id/left_bar"
+             android:layout_height="match_parent"
+             android:layout_width="@dimen/sidebar_width"
+             android:layout_alignParentLeft="true"
+             android:layout_alignParentTop="true"
+             android:layout_alignParentBottom="true"/>
+
+    <include layout="@layout/right_bar"
+             android:id="@+id/right_bar"
+             android:layout_height="match_parent"
+             android:layout_width="@dimen/sidebar_width"
+             android:layout_alignParentRight="true"
+             android:layout_alignParentTop="true"
+             android:layout_alignParentBottom="true"/>
+
+    <include layout="@layout/clock"
+             android:id="@+id/clock"
+             android:layout_height="wrap_content"
+             android:layout_width="wrap_content"
+            android:layout_toLeftOf="@id/right_bar"
+            android:layout_alignParentTop="true"/>
+
+    <include layout="@layout/battery"
+             android:id="@+id/battery"
+             android:layout_height="wrap_content"
+             android:layout_width="wrap_content"
+             android:layout_toLeftOf="@id/clock"
+             android:layout_alignParentTop="true"/>
+
     <LinearLayout
             android:id="@+id/top_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bottom_height"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/battery"
+            android:layout_toRightOf="@id/left_bar"
             android:orientation="horizontal"
             android:baselineAligned="false">
-        <include layout="@layout/top_left_gradient"/>
         <include layout="@layout/line"/>
         <include layout="@layout/category"
                  android:id="@+id/screen_mode_name"/>
         <View
-              android:layout_width="0dp"
-              android:layout_height="@dimen/line_width"
-              android:layout_gravity="center_vertical"
-              android:layout_weight="20"
-              android:background="@color/piptext"/>
-        <include layout="@layout/clock"/>
+                android:layout_width="0dp"
+                android:layout_height="@dimen/line_width"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="20"
+                android:background="@color/piptext"/>
+
     </LinearLayout>
+
 
     <!-- The Bottom bar-->
     <LinearLayout
             android:id="@+id/bottom_bar"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/top_bottom_height"
             android:layout_gravity="center_vertical"
-            android:layout_alignParentLeft="true"
+            android:layout_toRightOf="@id/left_bar"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/right_bar"
             android:orientation="horizontal"
             android:baselineAligned="false">
 
-        <include layout="@layout/bottom_left_gradient"/>
-
         <include layout="@layout/line"/>
         <include layout="@layout/category"/>
         <include layout="@layout/line"/>
@@ -67,8 +95,6 @@
         <include layout="@layout/line"/>
         <include layout="@layout/category"/>
         <include layout="@layout/line"/>
-
-        <include layout="@layout/bottom_right_gradient"/>
 
     </LinearLayout>
 
@@ -77,14 +103,11 @@
             android:id="@+id/middle_section"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_alignParentLeft="true"
+            android:layout_toRightOf="@id/left_bar"
             android:layout_below="@id/top_bar"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/right_bar"
             android:layout_above="@id/bottom_bar"
             android:orientation="horizontal">
-
-        <include layout="@layout/scrollbar"
-                 android:id="@+id/scrollbar"/>
 
 
         <com.henryadamsjr.pipboy.home.CustomListView
