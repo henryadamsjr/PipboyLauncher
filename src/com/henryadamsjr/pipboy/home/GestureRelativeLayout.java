@@ -88,7 +88,6 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
             CustomListView mList = (CustomListView) findViewById(R.id.all_apps);
             mList.scrollSelection((int) e2.getY());
         }
-
         return false;
     }
 
@@ -98,11 +97,12 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d(Home.LOG_TAG, "X: " + distanceX + " Y: " + distanceY);
         if (Math.abs(distanceY) > Math.abs(distanceX)) {
             float velocity = distanceY / (e2.getEventTime() - e1.getEventTime());
             CustomListView mList = (CustomListView) findViewById(R.id.all_apps);
             mList.flingSelection(velocity);
-        } else if (Math.abs(distanceX) > Math.abs(distanceY)) {
+        } else if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > 1000) {
             screenInfo.changeScreen((int) (distanceX / Math.abs(distanceX)));
             setUpScreen();
         }
@@ -208,7 +208,6 @@ public class GestureRelativeLayout extends RelativeLayout implements GestureDete
             public void onReceive(final Context context, Intent intent) {
                 int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
                 int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
-                Log.i(Home.LOG_TAG, "level: " + level + "; scale: " + scale);
                 int percent = (level*100)/scale;
 
                 final String newBatteryLevel = "BP " + String.valueOf(percent) + "/100";
